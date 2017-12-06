@@ -1,0 +1,9 @@
+prop.env=${prop.env}
+log.home=${log.home}
+
+jdbc.url=${jdbc.url}
+jdbc.username=${jdbc.username}
+jdbc.password=${jdbc.password}
+
+gujiao.file=${gujiao.file}
+world.file=${world.file}
