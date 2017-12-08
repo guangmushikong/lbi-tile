@@ -1,5 +1,6 @@
 
-##1、地图服务列表    
+## 1、地图服务列表  
+  
 [Demo](http://54.223.166.139:8080)  
 
 <table>
@@ -45,7 +46,7 @@
 	<td>城市</td> 
 	<td>WMTS</td>
 	<td>png/geojson/mapbox-vector</td>
-	<td>http://54.223.166.139:8888/geoserver/gwc/service/wmts?REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&LAYER=lbi:s_ods_city_simplify&STYLE=&TILEMATRIX=EPSG:900913:5&TILEMATRIXSET=EPSG:900913&FORMAT=application/x-protobuf;type=mapbox-vector&TILECOL=23&TILEROW=13</td>
+	<td>http://54.223.166.139:8888/geoserver/gwc/service/wmts</td>
     <td> </td> 
 </tr>
 <tr>   
@@ -57,11 +58,19 @@
 </tr>
 </table>
 
+<pre><code>
+--wmts示例地址
+http://54.223.166.139:8888/geoserver/gwc/service/wmts?REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&LAYER=lbi:s_ods_city_simplify&STYLE=&TILEMATRIX=EPSG:900913:5&TILEMATRIXSET=EPSG:900913&FORMAT=application/x-protobuf;type=mapbox-vector&TILECOL=23&TILEROW=13
+--tms示例地址
+http://54.223.166.139:8888/geoserver/gwc/service/tms/1.0.0/lbi:s_ods_city_simplify@EPSG:900913@geojson/5/22/20.geojson
+http://54.223.166.139:8888/geoserver/gwc/service/tms/1.0.0/lbi:s_ods_city_simplify@EPSG:900913@png/5/22/20.png
+</code></pre>
 
-##2、瓦片数据存放目录 
-服务器(http://54.223.166.139)瓦片数据统一存放目录/home/ec2-user/tiledata 
+## 2、瓦片数据存放目录 
+
+服务器（http://54.223.166.139）瓦片数据统一存放目录/home/ec2-user/tiledata 
    
-瓦片坐标投影为900913；
+瓦片坐标投影为900913；	
 瓦片图片为png格式；    
 
 <table>
@@ -85,7 +94,8 @@
 </tr>
 </table>
 
-##3、地图服务
+## 3、地图服务
+
 地图服务引擎lbi-tile,部署路径/home/ec2-user/tomcat1,端口8080		
 	
 地图渲染引擎Geoserver,部署路径/home/ec2-user/tomcat2,端口8888	
