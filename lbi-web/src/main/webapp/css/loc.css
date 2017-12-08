@@ -1,0 +1,145 @@
+@CHARSET "UTF-8";
+body {
+	padding-bottom: 10px;
+}
+/*---Menu Bar---*/
+.m_menubar {
+	position:absolute;top:10px;left:10px;z-index:300;background:#fff;
+}
+/*---Tool Bar---*/
+.m_toolbar{
+	position:absolute;top:10px;right:10px;z-index:300;
+}
+/*---MapStatus Bar---*/
+.m_statusbar{
+	width:100%;height:20px;z-index:301;background:#fff;
+}
+/*---Map Button---*/
+.b_loaddata{
+	position: absolute;bottom:110px;right:0px;z-index:300;
+}
+.b_zoomin{
+	position: absolute;bottom:70px;right:0px;z-index:300;
+}
+.b_zoomout{
+	position: absolute;bottom:30px;right:0px;z-index:300;
+}
+
+td.details-control {
+    background: url('../images/details_open.png') no-repeat center center;
+    cursor: pointer;
+}
+tr.shown td.details-control {
+    background: url('../images/details_close.png') no-repeat center center;
+}
+/*---Menu Panel---*/
+.m_menupanel {
+  margin-top: 0px;
+  padding-left:10px;
+  width:600px;
+  background:#fff;
+  position:absolute;
+  top:40px;
+  left:0px;
+  z-index:300;
+  display:none;
+}
+.s_menupanel {
+	position: absolute;
+	top:-5px;
+	left:95px;
+	z-index:301;
+}
+/*---Map Panel---*/
+.m_mappanel {
+  margin-top: 0px;
+  padding-left:10px;
+  width:600px;
+  background:#fff;
+  position:absolute;
+  top:40px;
+  left:0px;
+  z-index:301;
+  display:none;
+}
+.s_mappanel {
+	position: absolute;
+	top:-5px;
+	left:130px;
+	z-index:301;
+}
+/*---Poi Panel---*/
+.m_poipanel {
+  margin-top: 0px;
+  padding-left:10px;
+  width:800px;
+  background:#fff;
+  position:absolute;
+  top:40px;
+  left:0px;
+  z-index:300;
+  display:none;
+}
+.s_poipanel {
+	position: absolute;
+	top:-5px;
+	left:165px;
+	z-index:301;
+}
+/*---MapType---*/
+.m_basemap {
+  width:70px;
+  height:70px;
+  background-image : url('../images/mapchange1.png') ;
+  position:absolute;
+  top:10px;
+  right:10px;
+  z-index:300;
+}
+.m_basemap_panel {
+  width:70px;
+  height:210px;
+  position:absolute;
+  top:10px;
+  right:10px;
+  z-index:301;
+  padding:0px;
+  margin:0px;
+  display:none;
+}
+.mapchange1 {
+width:70px;height:70px;background-image:url('../images/mapchange1.png');
+}
+.mapchange2 {
+  width:70px;height:70px;background-image:url('../images/mapchange2.png');
+}
+.mapchange3 {
+  width:70px;height:70px;background-image:url('../images/mapchange3.png');
+}
+.mapchange4 {
+  width:70px;height:70px;background-image:url('../images/mapchange4.png');
+}
+/*---Legend---*/
+.info {
+    padding: 6px 8px;
+    font: 14px/16px Arial, Helvetica, sans-serif;
+    background: white;
+    background: rgba(255,255,255,0.8);
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    border-radius: 5px;
+}
+.info h4 {
+    margin: 0 0 5px;
+    color: #777;
+}
+.legend {
+    line-height: 18px;
+    color: #555;
+}
+.legend i {
+    width: 18px;
+    height: 18px;
+    float: left;
+    margin-right: 8px;
+    opacity: 0.7;
+}

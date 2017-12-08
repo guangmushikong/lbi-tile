@@ -42,11 +42,19 @@ function initMap(){
     var worldLayer = L.tileLayer('tile/world/{z}/{x}/{y}', {
         tms: true
     });
+
+    //var urlTemplate="http://54.223.166.139:8888/geoserver/gwc/service/tms/1.0.0/lbi:s_ods_city_simplify@EPSG:900913@png/{z}/{x}/{y}.png";
+    var urlTemplate="tms/1.0.0/lbi:s_ods_city_simplify@EPSG:900913@png/{z}/{x}/{y}";
+    var city_tms_Layer = L.tileLayer(urlTemplate, {
+        maxZoom: 10,
+        tms: true
+    });
     var cityLayer=loadCityLayer();
     var overlays={
-        '城市':cityLayer,
-        '古交':gujiaoLayer,
-        '世界':worldLayer
+        '城市XYZ(geojson)':cityLayer,
+        '城市TMS(png)':city_tms_Layer,
+        '古交XYZ(png)':gujiaoLayer,
+        '世界XYZ(png)':worldLayer
     };
 
     //初始化地图控件
