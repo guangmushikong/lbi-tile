@@ -6,9 +6,9 @@
 <table>
 <tr>
 	<td>ID</td>    
-	<td>名称</td> 
-    <td>协议</td>
-	<td>输出格式</td>
+	<td width=50>名称</td> 
+    <td width=50>协议</td>
+	<td width=120>输出格式</td>
     <td>URL模板</td>
     <td>备注</td> 
 </tr>
@@ -39,13 +39,16 @@
 	<td>城市</td> 
 	<td>WMS</td>
 	<td>png</td>
-	<td>http://54.223.166.139:8888/geoserver/ows?service=wms&version=1.3.0&request=GetCapabilities</td>
+	<td>http://54.223.166.139:8888/geoserver/ows?service=wms</td>
     <td> </td> 
 </tr>
 <tr>   
 	<td>城市</td> 
 	<td>WMTS</td>
-	<td>png/geojson/mapbox-vector</td>
+	<td>png<br/>
+	geojson<br/>
+	mapbox-vector
+	</td>
 	<td>http://54.223.166.139:8888/geoserver/gwc/service/wmts</td>
     <td> </td> 
 </tr>
@@ -53,11 +56,21 @@
 	<td>城市</td> 
 	<td>TMS</td>
 	<td>png/geojson</td>
-	<td>http://54.223.166.139:8888/geoserver/gwc/service/tms/1.0.0/lbi:s_ods_city_simplify@EPSG:900913@png/{z}/{x}/{y}.png</td>
+	<td>http://54.223.166.139:8888/geoserver/gwc/service/tms/1.0.0/
+	lbi:s_ods_city_simplify@EPSG:900913@png/{z}/{x}/{y}.png</td>
     <td>支持4326和900913</td> 
 </tr>
 </table>
 
+Geoserver服务列表
+<pre><code>
+--wms服务
+http://54.223.166.139:8888/geoserver/ows?service=wms&version=1.3.0&request=GetCapabilities
+--tms服务
+http://54.223.166.139:8888/geoserver/gwc/service/tms/1.0.0
+</code></pre>
+
+服务示例地址
 <pre><code>
 --wmts示例地址
 http://54.223.166.139:8888/geoserver/gwc/service/wmts?REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&LAYER=lbi:s_ods_city_simplify&STYLE=&TILEMATRIX=EPSG:900913:5&TILEMATRIXSET=EPSG:900913&FORMAT=application/x-protobuf;type=mapbox-vector&TILECOL=23&TILEROW=13
