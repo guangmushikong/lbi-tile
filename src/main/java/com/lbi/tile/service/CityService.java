@@ -8,11 +8,19 @@ import com.lbi.tile.model.Admin_Region;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.WKTReader;
 
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
 import org.wololo.geojson.GeoJSON;
 import org.wololo.jts2geojson.GeoJSONWriter;
 
 import javax.annotation.Resource;
+import javax.imageio.ImageIO;
+
+import java.awt.image.BufferedImage;
+import java.io.File;
+
 import java.util.*;
 
 @Service("cityService")
@@ -20,18 +28,36 @@ public class CityService {
     @Resource(name="cityDao")
     private CityDao cityDao;
 
-    public JSONObject getCityList(){
-        JSONObject obj=new JSONObject();
-        List<Map<String,String>> list=cityDao.getCityList();
-        if(list!=null){
-            obj.put("success",true);
-            obj.put("msg","操作成功");
-            obj.put("data",list);
-        }else{
-            obj.put("success",false);
-            obj.put("msg","操作失败");
+    @Value("${tile.gujiao}")
+    private String GUJIAO_PATH;
+    @Value("${tile.world}")
+    private String WORLD_PATH;
+
+
+    public BufferedImage getGujiao(Tile tile){
+        try{
+            String fileName= GUJIAO_PATH+File.separator+tile.getZ()+File.separator+tile.getX()+File.separator+tile.getY()+".png";
+            File file=new File(fileName);
+            if(file.exists())return ImageIO.read(file);
+        }catch (Exception ex){
+            ex.printStackTrace();
         }
-        return obj;
+        return null;
+    }
+    public BufferedImage getWorld(Tile tile){
+        try{
+            String fileName= WORLD_PATH+File.separator+tile.getZ()+File.separator+tile.getX()+File.separator+tile.getY()+".jpg";
+            File file=new File(fileName);
+            if(file.exists())return ImageIO.read(file);
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+        return null;
+    }
+
+
+    public List<Map<String,String>> getCityList(){
+        return cityDao.getCityList();
     }
     public List<JSONObject> getCityRegionByTile(Tile tile){
         List<JSONObject> result=new ArrayList<JSONObject>();

@@ -2,55 +2,32 @@ package com.lbi.tile.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.lbi.map.Tile;
+import com.lbi.tile.model.ResultBody;
 import com.lbi.tile.service.CityService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
-import org.springframework.stereotype.Controller;
+import com.lbi.util.ImageUtil;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import javax.imageio.ImageIO;
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletResponse;
+import javax.annotation.Resource;
 import java.awt.image.BufferedImage;
-import java.io.File;
+
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/city")
 public class CityController {
-    @Autowired
+    @Resource(name="cityService")
     private CityService cityService;
 
-    private static BufferedImage BLANKIMG;
-
-    //@Value("${tile.gujiao}")
-    private String GUJIAO_PATH;
-    @Value("${spring.database.driverClassName}")
-    private String WORLD_PATH;
-
-    public CityController(){
-        try{
-            System.out.println("world:"+WORLD_PATH);
-            Resource resource = new ClassPathResource("none.png");
-            BLANKIMG= ImageIO.read(resource.getInputStream());
-        }catch (Exception ex){
-            ex.printStackTrace();
-        }
+    @RequestMapping(value="/getcitylist.json",method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResultBody getCityList() {
+        List<Map<String,String>> list=cityService.getCityList();
+        return new ResultBody<>(list);
     }
 
-    @RequestMapping(value="/getcitylist",method = RequestMethod.GET)
-    @ResponseBody
-    JSONObject getCityList() {
-        return cityService.getCityList();
-    }
-
-
-    @RequestMapping(value="/city/{z}/{x}/{y}",method = RequestMethod.GET,produces = "application/json")
-    @ResponseBody
+    @RequestMapping(value="/city/{z}/{x}/{y}.json",method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
     List<JSONObject> getCityRegionByTile(
             @PathVariable("z") int z,
             @PathVariable("x") int x,
@@ -59,45 +36,30 @@ public class CityController {
         return cityService.getCityRegionByTile(tile);
     }
 
-    @RequestMapping(value="/gujiao/{z}/{x}/{y}",method = RequestMethod.GET)
-    public void gujiao(
+    @RequestMapping(value="/gujiao/{z}/{x}/{y}.png",method = RequestMethod.GET)
+    public ResponseEntity gujiao(
             @PathVariable("z") int z,
             @PathVariable("x") int x,
-            @PathVariable("y") int y,
-            HttpServletResponse resq) {
-        resq.setContentType("image/png");
-        BufferedImage image=null;
-        try{
-            String fileName= GUJIAO_PATH+"/"+z+"/"+x+"/"+y+".png";
-            File file=new File(fileName);
-            if(file.exists())image= ImageIO.read(file);
-            else image=BLANKIMG;
-            ServletOutputStream out = resq.getOutputStream();
-            ImageIO.write(image, "png", out);
-        }catch (Exception ex){
-            ex.printStackTrace();
-        }
+            @PathVariable("y") int y) {
+        Tile tile=new Tile(x,y,z);
+        BufferedImage image=cityService.getGujiao(tile);
+        byte[] bytes=null;
+        if(image!=null)bytes=ImageUtil.toByteArray(image);
+        else bytes=ImageUtil.emptyImage();
+        return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(bytes);
     }
 
-    @RequestMapping(value="/world/{z}/{x}/{y}",method = RequestMethod.GET)
-    public void world(
+    @RequestMapping(value="/world/{z}/{x}/{y}.png",method = RequestMethod.GET)
+    public ResponseEntity world(
             @PathVariable("z") int z,
             @PathVariable("x") int x,
-            @PathVariable("y") int y,
-            HttpServletResponse resq) {
-        resq.setContentType("image/png");
-        BufferedImage image=null;
-        try{
-            String fileName= WORLD_PATH+"/"+z+"/"+x+"/"+y+".jpg";
-            System.out.println(fileName);
-            File file=new File(fileName);
-            if(file.exists())image= ImageIO.read(file);
-            else image=BLANKIMG;
-            ServletOutputStream out = resq.getOutputStream();
-            ImageIO.write(image, "png", out);
-        }catch (Exception ex){
-            ex.printStackTrace();
-        }
+            @PathVariable("y") int y) {
+        Tile tile=new Tile(x,y,z);
+        BufferedImage image=cityService.getWorld(tile);
+        byte[] bytes=null;
+        if(image!=null)bytes=ImageUtil.toByteArray(image);
+        else bytes=ImageUtil.emptyImage();
+        return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(bytes);
     }
 
 }

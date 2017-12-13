@@ -10,7 +10,7 @@ function init(){
 //var strokeColor = 'rgb(20,20,20)';
 function initCity(){
     $.get(
-        "city/getcitylist",
+        "city/getcitylist.json",
         function(json){
             if(json.success){
                 var list=json.data;
@@ -38,22 +38,27 @@ function initMap(){
         "地形":L.tileLayer('http://c.tile.stamen.com/terrain/{z}/{x}/{y}.png')
         //"晕渲图1":L.tileLayer('http://tile.stamen.com/terrain-background/{z}/{x}/{y}.png'),
     };
-    var gujiaoLayer = L.tileLayer('city/gujiao/{z}/{x}/{y}', {
+    var gujiaoLayer = L.tileLayer('city/gujiao/{z}/{x}/{y}.png', {
         tms: true
     });
-    var worldLayer = L.tileLayer('city/world/{z}/{x}/{y}', {
+    var worldLayer = L.tileLayer('city/world/{z}/{x}/{y}.png', {
+        tms: true
+    });
+    var urlTemplate="tms/1.0.0/lbi:s_ods_city_simplify@EPSG:900913@png/{z}/{x}/{y}.png";
+    var city_tms_Layer = L.tileLayer(urlTemplate, {
+        maxZoom: 11,
         tms: true
     });
     var mvtLayer1=loadGAUL0MVTLayer();
     var mvtLayer2=loadCityMVTLayer();
     var cityLayer=loadCityLayer();
     var overlays={
-        '城市':cityLayer,
-        '古交':gujiaoLayer,
-        '世界':worldLayer,
-        'MVT':mvtLayer1,
-        'City':mvtLayer2
+        '城市XYZ(geojson)':cityLayer,
+        '城市TMS(png)':city_tms_Layer,
+        '古交XYZ(png)':gujiaoLayer,
+        '世界XYZ(png)':worldLayer
     };
+
 
     //初始化地图控件
     mapObj = L.map('mapbox', {
@@ -230,7 +235,7 @@ function  loadCityMVTLayer() {
     });
 }
 function loadCityLayer(){
-    var geojsonURL="city/city/{z}/{x}/{y}";
+    var geojsonURL="city/city/{z}/{x}/{y}.json";
     return new L.TileLayer.GeoJSON(geojsonURL,
         {
             clipTiles:true,

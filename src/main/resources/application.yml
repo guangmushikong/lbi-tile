@@ -1,3 +1,5 @@
+server:
+  port: 8080
 # Spring properties
 logging:
   level:
@@ -5,8 +7,6 @@ logging:
     com.example: DEBUG
 ################### DataSource Configuration ##########################
 spring:
-  database:
-    driverClassName: org.postgresql.Driver
   datasource:
     platform: postgres
     url: jdbc:postgresql://54.223.166.139:5432/postgres
@@ -14,5 +14,5 @@ spring:
     password: postgres
 ################### Tile Configuration ##########################
 tile:
-  gujiao:F:/tiledata/Gujiao_Image_Mercator
-  world:F:/tiledata/world_mercator
+  gujiao:F:/BaiduYunDownload/Gujiao_Image_Mercator
+  world:F:/BaiduYunDownload/world_mercator
