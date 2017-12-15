@@ -27,39 +27,4 @@ public class CityController {
         return new ResultBody<>(list);
     }
 
-    @RequestMapping(value="/city/{z}/{x}/{y}.json",method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
-    List<JSONObject> getCityRegionByTile(
-            @PathVariable("z") int z,
-            @PathVariable("x") int x,
-            @PathVariable("y") int y) {
-        Tile tile=new Tile(x,y,z);
-        return cityService.getCityRegionByTile(tile);
-    }
-
-    @RequestMapping(value="/gujiao/{z}/{x}/{y}.png",method = RequestMethod.GET)
-    public ResponseEntity gujiao(
-            @PathVariable("z") int z,
-            @PathVariable("x") int x,
-            @PathVariable("y") int y) {
-        Tile tile=new Tile(x,y,z);
-        BufferedImage image=cityService.getGujiao(tile);
-        byte[] bytes=null;
-        if(image!=null)bytes=ImageUtil.toByteArray(image);
-        else bytes=ImageUtil.emptyImage();
-        return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(bytes);
-    }
-
-    @RequestMapping(value="/world/{z}/{x}/{y}.png",method = RequestMethod.GET)
-    public ResponseEntity world(
-            @PathVariable("z") int z,
-            @PathVariable("x") int x,
-            @PathVariable("y") int y) {
-        Tile tile=new Tile(x,y,z);
-        BufferedImage image=cityService.getWorld(tile);
-        byte[] bytes=null;
-        if(image!=null)bytes=ImageUtil.toByteArray(image);
-        else bytes=ImageUtil.emptyImage();
-        return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(bytes);
-    }
-
 }

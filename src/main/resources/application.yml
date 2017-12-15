@@ -12,7 +12,3 @@ spring:
     url: jdbc:postgresql://54.223.166.139:5432/postgres
     username: postgres
     password: postgres
-################### Tile Configuration ##########################
-tile:
-  gujiao:F:/BaiduYunDownload/Gujiao_Image_Mercator
-  world:F:/BaiduYunDownload/world_mercator

@@ -6,8 +6,7 @@ function init(){
     initCommonStyle();
     initMap();
 }
-//var fillColor = 'rgba(149,139,255,0.4)';
-//var strokeColor = 'rgb(20,20,20)';
+
 function initCity(){
     $.get(
         "city/getcitylist.json",
@@ -32,31 +31,42 @@ function initCity(){
 }
 
 function initMap(){
+    var basemap_normal=L.tileLayer('http://webrd02.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}');
+    var basemap_satellite=L.tileLayer('http://mt3.google.cn/vt/lyrs=y@198&hl=zh-CN&gl=cn&src=app&x={x}&y={y}&z={z}&s=');
+    var basemap_terrain=L.tileLayer('http://c.tile.stamen.com/terrain/{z}/{x}/{y}.png');
+
     var baseMaps={
-        "Autonavi":L.tileLayer('http://webrd02.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}'),
-        "Google":L.tileLayer('http://mt3.google.cn/vt/lyrs=y@198&hl=zh-CN&gl=cn&src=app&x={x}&y={y}&z={z}&s='),
-        "地形":L.tileLayer('http://c.tile.stamen.com/terrain/{z}/{x}/{y}.png')
+        "地图":basemap_normal,
+        "地球":basemap_satellite,
+        "地形":basemap_terrain,
+        //"openlayers":basemap_openlayer
         //"晕渲图1":L.tileLayer('http://tile.stamen.com/terrain-background/{z}/{x}/{y}.png'),
     };
-    var gujiaoLayer = L.tileLayer('city/gujiao/{z}/{x}/{y}.png', {
+    var gujiao_satellite_xyz_png_Layer = L.tileLayer('xyz/gujiao/{x}/{y}/{z}.png', {maxZoom: 12});
+    var world_satellite_xyz_png_Layer = L.tileLayer('xyz/world/{x}/{y}/{z}.jpeg', {maxZoom: 10});
+    var china_city_xyz_geojson_Layer=initChina_City_xyz_geojson_Layer();
+
+    var gujiao_satellite_tms_png_Layer= L.tileLayer("tms/1.0.0/gujiao_satellite_raster@EPSG:900913@png/{z}/{x}/{y}.png", {
+        maxZoom: 12,
         tms: true
     });
-    var worldLayer = L.tileLayer('city/world/{z}/{x}/{y}.png', {
+    var world_satellite_tms_png_Layer= L.tileLayer("tms/1.0.0/world_satellite_raster@EPSG:900913@jpeg/{z}/{x}/{y}.jpeg", {
+        maxZoom: 10,
         tms: true
     });
-    var urlTemplate="tms/1.0.0/lbi:s_ods_city_simplify@EPSG:900913@png/{z}/{x}/{y}.png";
-    var city_tms_Layer = L.tileLayer(urlTemplate, {
+    var china_city_tms_png_Layer= L.tileLayer("tms/1.0.0/china_city_polygon@EPSG:900913@png/{z}/{x}/{y}.png", {
         maxZoom: 11,
         tms: true
     });
-    var mvtLayer1=loadGAUL0MVTLayer();
-    var mvtLayer2=loadCityMVTLayer();
-    var cityLayer=loadCityLayer();
+
+
     var overlays={
-        '城市XYZ(geojson)':cityLayer,
-        '城市TMS(png)':city_tms_Layer,
-        '古交XYZ(png)':gujiaoLayer,
-        '世界XYZ(png)':worldLayer
+        '中国城市XYZ(geojson)':china_city_xyz_geojson_Layer,
+        '中国城市TMS(png)':china_city_tms_png_Layer,
+        '古交卫星XYZ(png)':gujiao_satellite_xyz_png_Layer,
+        '古交卫星TMS(png)':gujiao_satellite_tms_png_Layer,
+        '世界卫星XYZ(png)':world_satellite_xyz_png_Layer,
+        '世界卫星TMS(png)':world_satellite_tms_png_Layer
     };
 
 
@@ -67,23 +77,25 @@ function initMap(){
         minZoom:3,
         maxZoom:18,
         zoomControl:false,	//不加载默认zoomControl,
-        layers: [baseMaps.Autonavi]
+        layers: [basemap_normal]
     });
     //LayerControl
-    L.control.layers(baseMaps,overlays).addTo(mapObj);
+    //L.control.layers(overlays).addTo(mapObj);
     //mapObj.setView([0,39], 6);
     var zoomControl = L.control.zoom({
         position: 'bottomright',
         zoomInTitle:'放大',
         zoomOutTitle:'缩小'
     }).addTo(mapObj);
+
+    L.control.layers(baseMaps,overlays).addTo(mapObj);
     L.control.scale({imperial:false}).addTo(mapObj);//去除英制单位
     viewMapOption();
     mapObj.on('move', viewMapOption);
-    //mapObj.on('mousemove', viewCoordinate);
+    mapObj.on('mousemove', viewCoordinate);
+
     initMenuBar();
     initStatusBar();
-
 }
 /**
  * 创建菜单条
@@ -171,7 +183,7 @@ function initCommonStyle(){
     var marker=new L.Marker({icon:svgIcon});
     commonstyle['poi']=marker;
 }
-function  loadGAUL0MVTLayer() {
+/*function  loadGAUL0MVTLayer() {
     return new L.TileLayer.MVTSource(opts);
 }
 
@@ -233,10 +245,17 @@ function  loadCityMVTLayer() {
             return style;
         }
     });
+}*/
+function initChina_City_tms_png_Layer(){
+    var urlTemplate="tms/1.0.0/lbi:s_ods_city_simplify@EPSG:900913@png/{z}/{x}/{y}.png";
+    return L.tileLayer("tms/1.0.0/lbi:s_ods_city_simplify@EPSG:900913@png/{z}/{x}/{y}.png", {
+        maxZoom: 11,
+        tms: true
+    });
 }
-function loadCityLayer(){
-    var geojsonURL="city/city/{z}/{x}/{y}.json";
-    return new L.TileLayer.GeoJSON(geojsonURL,
+function initChina_City_xyz_geojson_Layer(){
+    var urlTemplate="xyz/city/{x}/{y}/{z}.json";
+    return new L.TileLayer.GeoJSON(urlTemplate,
         {
             clipTiles:true,
             unique:function(feature){
@@ -264,6 +283,10 @@ function loadCityLayer(){
             }
         });
 }
+function initChina_City_tms_geojson_Layer(){
+
+}
+
 /**
  * 容器改变触发
  */
@@ -285,6 +308,7 @@ function viewMapOption(){
     var bounds=mapObj.getBounds();
     $("#i_map").text("级别="+mapObj.getZoom()+",中心("+bounds.getCenter().lng.toFixed(6)+","+bounds.getCenter().lat.toFixed(6)+"),边界["+bounds.getSouthWest().lng.toFixed(6)+","+bounds.getNorthEast().lng.toFixed(6)+","+bounds.getSouthWest().lat.toFixed(6)+","+bounds.getNorthEast().lat.toFixed(6)+"]");
 }
+/*
 var opts = {
     url: "http://spatialserver.spatialdev.com/services/vector-tiles/gadm2014kenya/{z}/{x}/{y}.pbf",
     //debug: true,
@@ -294,7 +318,7 @@ var opts = {
         return feature.properties.id;
     },
 
-    /**
+    /!**
      * The filter function gets called when iterating though each vector tile feature (vtf). You have access
      * to every property associated with a given feature (the feature, and the layer). You can also filter
      * based of the context (each tile that the feature is drawn onto).
@@ -303,7 +327,7 @@ var opts = {
      *
      * @param feature
      * @returns {boolean}
-     */
+     *!/
     filter: function(feature, context) {
         if (feature.layer.name === 'gadm1_label' || feature.layer.name === 'gadm1') {
             return true;
@@ -312,7 +336,7 @@ var opts = {
         return false;
     },
 
-    /**
+    /!**
      * When we want to link events between layers, like clicking on a label and a
      * corresponding polygon freature, this will return the corresponding mapping
      * between layers. This provides knowledge of which other feature a given feature
@@ -320,13 +344,13 @@ var opts = {
      *
      * @param layerName  the layer we want to know the linked layer from
      * @returns {string} returns corresponding linked layer
-     */
-    /*layerLink: function(layerName) {
+     *!/
+    /!*layerLink: function(layerName) {
         if (layerName.indexOf('_label') > -1) {
             return layerName.replace('_label','');
         }
         return layerName + '_label';
-    },*/
+    },*!/
 
     style: function(feature) {
         var style = {};
@@ -380,4 +404,4 @@ var opts = {
 
         return style;
     }
-}
+}*/

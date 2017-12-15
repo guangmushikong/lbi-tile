@@ -13,6 +13,6 @@ public class JsonViewResolver implements ViewResolver {
 		MappingJackson2JsonView view = new MappingJackson2JsonView();
         view.setPrettyPrint(true);       
         return view;
-      }
+    }
 
 }

@@ -28,33 +28,6 @@ public class CityService {
     @Resource(name="cityDao")
     private CityDao cityDao;
 
-    @Value("${tile.gujiao}")
-    private String GUJIAO_PATH;
-    @Value("${tile.world}")
-    private String WORLD_PATH;
-
-
-    public BufferedImage getGujiao(Tile tile){
-        try{
-            String fileName= GUJIAO_PATH+File.separator+tile.getZ()+File.separator+tile.getX()+File.separator+tile.getY()+".png";
-            File file=new File(fileName);
-            if(file.exists())return ImageIO.read(file);
-        }catch (Exception ex){
-            ex.printStackTrace();
-        }
-        return null;
-    }
-    public BufferedImage getWorld(Tile tile){
-        try{
-            String fileName= WORLD_PATH+File.separator+tile.getZ()+File.separator+tile.getX()+File.separator+tile.getY()+".jpg";
-            File file=new File(fileName);
-            if(file.exists())return ImageIO.read(file);
-        }catch (Exception ex){
-            ex.printStackTrace();
-        }
-        return null;
-    }
-
 
     public List<Map<String,String>> getCityList(){
         return cityDao.getCityList();
