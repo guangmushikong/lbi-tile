@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import java.awt.image.BufferedImage;
 import java.util.List;
 
 
@@ -44,6 +43,19 @@ public class XYZController {
         byte[] bytes=xyzService.getGujiao(tile);
         if(bytes==null)bytes=ImageUtil.emptyImage();
         return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(bytes);
+    }
+
+    @RequestMapping(value="/dem/{x}/{y}/{z}.tif",method = RequestMethod.GET)
+    public ResponseEntity dem(
+            @PathVariable("x") int x,
+            @PathVariable("y") int y,
+            @PathVariable("z") int z) {
+        Tile tile=new Tile(x,y,z);
+        int alterY=new Double(Math.pow(2,z)).intValue()-1-y;
+        tile.setY(alterY);
+        byte[] bytes=xyzService.getDEM(tile);
+        if(bytes==null)bytes=ImageUtil.emptyImage();
+        return ResponseEntity.ok().contentType(MediaType.valueOf("image/tif")).body(bytes);
     }
 
     @RequestMapping(value="/world/{x}/{y}/{z}.jpeg",method = RequestMethod.GET)

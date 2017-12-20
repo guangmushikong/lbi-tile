@@ -2,8 +2,8 @@ package com.lbi.tile.controller;
 
 
 import com.lbi.map.Tile;
-import com.lbi.tile.model.TileMap;
-import com.lbi.tile.model.TileMapService;
+import com.lbi.tile.model.xml.XmlRoot_TileMap;
+import com.lbi.tile.model.xml.XmlRoot_TileMapService;
 import com.lbi.tile.service.TMSService;
 
 import org.springframework.http.MediaType;
@@ -19,20 +19,18 @@ public class TMSController {
     @Resource(name="tmsService")
     private TMSService tmsService;
 
-
     @RequestMapping(value="/{version}", method = RequestMethod.GET,produces = MediaType.TEXT_XML_VALUE)
-    @ResponseBody
-    public TileMapService tileMapService(@PathVariable("version") String version) {
-        TileMapService u = tmsService.getTileMapService(version);
+    public XmlRoot_TileMapService tileMapService(@PathVariable("version") String version) {
+        XmlRoot_TileMapService u = tmsService.getTileMapService(version);
         return u;
     }
     @RequestMapping(value="/{version}/{tileset}", method = RequestMethod.GET,produces = MediaType.TEXT_XML_VALUE)
     @ResponseBody
-    public TileMap tileMap(
+    public XmlRoot_TileMap tileMap(
             @PathVariable("version") String version,
             @PathVariable("tileset") String tileset) {
         String[] args=tileset.split("@");
-        TileMap u = tmsService.getTileMap(version,args[0],args[1],args[2]);
+        XmlRoot_TileMap u = tmsService.getTileMap(version,args[0],args[1],args[2]);
         return u;
     }
 
@@ -59,6 +57,18 @@ public class TMSController {
         String[] args=tileset.split("@");
         byte[] bytes=tmsService.getTMS(version,args[0],args[1],args[2],tile);
         return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(bytes);
+    }
+    @RequestMapping(value="/{version}/{tileset}/{z}/{x}/{y}.tif",method = RequestMethod.GET)
+    public ResponseEntity tms_tif(
+            @PathVariable("version") String version,
+            @PathVariable("tileset") String tileset,
+            @PathVariable("z") int z,
+            @PathVariable("x") int x,
+            @PathVariable("y") int y) {
+        Tile tile=new Tile(x,y,z);
+        String[] args=tileset.split("@");
+        byte[] bytes=tmsService.getTMS(version,args[0],args[1],args[2],tile);
+        return ResponseEntity.ok().contentType(MediaType.valueOf("image/tif")).body(bytes);
     }
 
 }

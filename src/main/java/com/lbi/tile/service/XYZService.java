@@ -25,7 +25,9 @@ import org.wololo.jts2geojson.GeoJSONWriter;
 import javax.annotation.Resource;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,11 +42,12 @@ public class XYZService {
     private String GUJIAO_PATH;
     @Value("${tile.world}")
     private String WORLD_PATH;
+    @Value("${tile.dem}")
+    private String DEM_PATH;
 
     public byte[] getGujiao(Tile tile){
         try{
             String fileName= GUJIAO_PATH+ File.separator+tile.getZ()+File.separator+tile.getX()+File.separator+tile.getY()+".png";
-            System.out.println(fileName);
             File file=new File(fileName);
             if(file.exists()){
                 BufferedImage image=ImageIO.read(file);
@@ -58,11 +61,31 @@ public class XYZService {
     public byte[] getWorld(Tile tile){
         try{
             String fileName= WORLD_PATH+File.separator+tile.getZ()+File.separator+tile.getX()+File.separator+tile.getY()+".jpg";
-            System.out.println(fileName);
             File file=new File(fileName);
             if(file.exists()){
                 BufferedImage image=ImageIO.read(file);
                 if(image!=null)return ImageUtil.toByteArray(image);
+            }
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+        return null;
+    }
+    public byte[] getDEM(Tile tile){
+        try{
+            String fileName= DEM_PATH+File.separator+tile.getZ()+File.separator+tile.getX()+File.separator+tile.getY()+".tif";
+            File file=new File(fileName);
+            if(file.exists()){
+                FileInputStream fis = new FileInputStream(file);
+                ByteArrayOutputStream bos = new ByteArrayOutputStream(1000);
+                byte[] b = new byte[1000];
+                int n;
+                while ((n = fis.read(b)) != -1) {
+                    bos.write(b, 0, n);
+                }
+                fis.close();
+                bos.close();
+                return bos.toByteArray();
             }
         }catch (Exception ex){
             ex.printStackTrace();

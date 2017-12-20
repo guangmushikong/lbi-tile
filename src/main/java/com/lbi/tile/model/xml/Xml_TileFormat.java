@@ -1,29 +1,16 @@
-package com.lbi.tile.model;
+package com.lbi.tile.model.xml;
 
 import javax.xml.bind.annotation.XmlAttribute;
 
-public class X_TileFormat {
-    int width;
-    int height;
-    String mime_type;
-    String extension;
-
+public class Xml_TileFormat {
     @XmlAttribute(name="width")
-    public int getWidth() {
-        return width;
-    }
+    int width;
     @XmlAttribute(name="height")
-    public int getHeight() {
-        return height;
-    }
+    int height;
     @XmlAttribute(name="mime-type")
-    public String getMimeType() {
-        return mime_type;
-    }
+    String mime_type;
     @XmlAttribute(name="extension")
-    public String getExtension() {
-        return extension;
-    }
+    String extension;
 
 
     public void setWidth(int val) {

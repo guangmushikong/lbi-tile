@@ -3,12 +3,11 @@ server:
 # Spring properties
 logging:
   level:
-    org.springframework: INFO
-    com.example: DEBUG
+    com.lbi.tile: INFO
 ################### DataSource Configuration ##########################
 spring:
   datasource:
     platform: postgres
-    url: jdbc:postgresql://54.223.166.139:5432/postgres
+    url: jdbc:postgresql://localhost:5432/postgres
     username: postgres
     password: postgres

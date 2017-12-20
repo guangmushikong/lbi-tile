@@ -3,6 +3,7 @@ package com.lbi.tile.service;
 import com.lbi.map.Tile;
 import com.lbi.tile.dao.TMSDao;
 import com.lbi.tile.model.*;
+import com.lbi.tile.model.xml.*;
 import com.lbi.util.ImageUtil;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
@@ -17,10 +18,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import javax.annotation.Resource;
+
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,6 +41,12 @@ public class TMSService {
     private String GUJIAO_PATH;
     @Value("${tile.world}")
     private String WORLD_PATH;
+    @Value("${tile.dem}")
+    private String DEM_PATH;
+    @Value("${mapserver.host}")
+    private String MAPSERVER_HOST;
+    @Value("${geoserver.host}")
+    private String GEOSERVER_HOST;
 
     public TMSService(TMSDao tmsDao){
         this.tmsDao=tmsDao;
@@ -62,7 +71,7 @@ public class TMSService {
             UriComponents uriComponents = UriComponentsBuilder.
                     newInstance().
                     scheme("http").
-                    host("54.223.166.139").
+                    host(GEOSERVER_HOST).
                     port(8888).
                     path("/geoserver/gwc/service/tms").
                     pathSegment(version).
@@ -92,55 +101,63 @@ public class TMSService {
         }else if(tileMap.getSType()==2){
             if(tileMap.getTitle().equalsIgnoreCase("world_satellite_raster"))return getWorld(tile);
             else if(tileMap.getTitle().equalsIgnoreCase("gujiao_satellite_raster"))return getGujiao(tile);
+            else if(tileMap.getTitle().equalsIgnoreCase("china_dem_tiff"))return getDEM(tile);
         }
 
         return null;
     }
-    public TileMapService getTileMapService(String version){
-        TileMapService u = new TileMapService();
+    public XmlRoot_TileMapService getTileMapService(String version){
+        XmlRoot_TileMapService u = new XmlRoot_TileMapService();
         u.setVersion(version);
         u.setServices("http://tms.osgeo.org/1.0.0");
         u.setTitle("Tile Map Service");
-        u.setAbstract("A Tile Map Service served by GeoWebCache");
+        u.setAbstract("A Tile Map Service");
         List<T_TileMap> tileMapList1=tmsDao.getTileMapList();
-        List<X_TileMap> tileMapList=new ArrayList<>();
+        List<Xml_TileMap> tileMapList=new ArrayList<>();
         for(T_TileMap t_TileMap:tileMapList1){
-            X_TileMap x_TileMap=new X_TileMap(t_TileMap.getTitle(),t_TileMap.getSrs(),t_TileMap.getProfile(),t_TileMap.getHref());
+            Xml_TileMap x_TileMap=new Xml_TileMap(t_TileMap.getTitle(),t_TileMap.getSrs(),t_TileMap.getProfile(),t_TileMap.getHref());
             tileMapList.add(x_TileMap);
         }
         u.setTileMaps(tileMapList);
         return u;
     }
-    public TileMap getTileMap(
+    public XmlRoot_TileMap getTileMap(
             String version,
             String layerName,
             String srs,
             String formatExtension){
         T_TileMap u =tmsDao.getTileMapById(layerName,srs,formatExtension);
         if(u!=null){
-            TileMap item=new TileMap();
+            XmlRoot_TileMap item=new XmlRoot_TileMap();
+            item.setVersion(version);
             item.setAbstract("");
-            item.setServices("http://54.223.166.139:8080/tms/1.0.0");
             item.setTitle(u.getTitle());
-            X_BoundingBox XBoundingBox =new X_BoundingBox();
-
-
-            item.setXBoundingBox(XBoundingBox);
-            X_Origin XOrigin =new X_Origin();
-
-            item.setXOrigin(XOrigin);
-            X_TileFormat XTileFormat =new X_TileFormat();
-
-            item.setXTileFormat(XTileFormat);
-
-            X_TileSets tileSets=new X_TileSets();
-            List<X_TileSet> tileSetList=new ArrayList<>();
+            item.setServices("http://"+MAPSERVER_HOST+":8080/tms/1.0.0");
+            item.setSRS(u.getSrs());
+            Xml_BoundingBox boundingBox =new Xml_BoundingBox();
+            boundingBox.setMinX(u.getMinX());
+            boundingBox.setMinY(u.getMinY());
+            boundingBox.setMaxX(u.getMaxX());
+            boundingBox.setMaxY(u.getMaxY());
+            item.setXBoundingBox(boundingBox);
+            Xml_Origin origin =new Xml_Origin();
+            origin.setX(u.getOriginX());
+            origin.setY(u.getOriginY());
+            item.setXOrigin(origin);
+            Xml_TileFormat tileFormat =new Xml_TileFormat();
+            tileFormat.setWidth(u.getTileWidth());
+            tileFormat.setHeight(u.getTileHeight());
+            tileFormat.setMimeType(u.getMimeType());
+            tileFormat.setExtension(u.getExtension());
+            item.setXTileFormat(tileFormat);
+            Xml_TileSets tileSets=new Xml_TileSets();
+            List<Xml_TileSet> tileSetList=new ArrayList<>();
             List<T_TileSet> tileSetList1=tmsDao.getTileSetListByID(u.getId());
             for(T_TileSet t_tileSet:tileSetList1){
-                X_TileSet x_tileSet=new X_TileSet(t_tileSet.getHref(),t_tileSet.getUnits_per_pixel(),t_tileSet.getOrder());
+                Xml_TileSet x_tileSet=new Xml_TileSet(t_tileSet.getHref(),t_tileSet.getUnits_per_pixel(),t_tileSet.getOrder());
                 tileSetList.add(x_tileSet);
             }
-
+            tileSets.setProfile(u.getProfile());
             tileSets.setTileSets(tileSetList);
             item.setTileSets(tileSets);
             return item;
@@ -153,7 +170,6 @@ public class TMSService {
     public byte[] getGujiao(Tile tile){
         try{
             String fileName= GUJIAO_PATH+ File.separator+tile.getZ()+File.separator+tile.getX()+File.separator+tile.getY()+".png";
-            System.out.println(fileName);
             File file=new File(fileName);
             if(file.exists()){
                 BufferedImage image=ImageIO.read(file);
@@ -167,11 +183,31 @@ public class TMSService {
     public byte[] getWorld(Tile tile){
         try{
             String fileName= WORLD_PATH+File.separator+tile.getZ()+File.separator+tile.getX()+File.separator+tile.getY()+".jpg";
-            System.out.println(fileName);
             File file=new File(fileName);
             if(file.exists()){
                 BufferedImage image=ImageIO.read(file);
                 if(image!=null)return ImageUtil.toByteArray(image);
+            }
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+        return null;
+    }
+    public byte[] getDEM(Tile tile){
+        try{
+            String fileName= DEM_PATH+File.separator+tile.getZ()+File.separator+tile.getX()+File.separator+tile.getY()+".tif";
+            File file=new File(fileName);
+            if(file.exists()){
+                FileInputStream fis = new FileInputStream(file);
+                ByteArrayOutputStream bos = new ByteArrayOutputStream(1000);
+                byte[] b = new byte[1000];
+                int n;
+                while ((n = fis.read(b)) != -1) {
+                    bos.write(b, 0, n);
+                }
+                fis.close();
+                bos.close();
+                return bos.toByteArray();
             }
         }catch (Exception ex){
             ex.printStackTrace();

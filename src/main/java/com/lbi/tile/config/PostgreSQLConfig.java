@@ -23,10 +23,10 @@ public class PostgreSQLConfig {
             dataSource.setUrl(jdbc_url);
             dataSource.setUsername(jdbc_username);
             dataSource.setPassword(jdbc_password);
-            dataSource.setMinIdle(5);
-            dataSource.setMaxIdle(50);
-            dataSource.setInitialSize(5);
-            dataSource.setMaxActive(40);
+            dataSource.setMinIdle(10);
+            dataSource.setMaxIdle(100);
+            dataSource.setInitialSize(10);
+            dataSource.setMaxActive(50);
             return dataSource;
         } catch (Exception e) {
             return null;

@@ -1,29 +1,16 @@
-package com.lbi.tile.model;
+package com.lbi.tile.model.xml;
 
 import javax.xml.bind.annotation.XmlAttribute;
 
-public class X_BoundingBox {
-    double minx;
-    double miny;
-    double maxx;
-    double maxy;
-
+public class Xml_BoundingBox {
     @XmlAttribute(name="minx")
-    public double getMinX() {
-        return minx;
-    }
+    double minx;
     @XmlAttribute(name="miny")
-    public double getMinY() {
-        return miny;
-    }
+    double miny;
     @XmlAttribute(name="maxx")
-    public double getMaxX() {
-        return maxx;
-    }
+    double maxx;
     @XmlAttribute(name="maxy")
-    public double getMaxY() {
-        return maxy;
-    }
+    double maxy;
 
     public void setMinX(double val) {
         this.minx=val;

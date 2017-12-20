@@ -1,20 +1,12 @@
-package com.lbi.tile.model;
+package com.lbi.tile.model.xml;
 
 import javax.xml.bind.annotation.XmlAttribute;
 
-public class X_Origin {
-    double x;
-    double y;
-
+public class Xml_Origin {
     @XmlAttribute(name="x")
-    public double getX() {
-        return x;
-    }
+    double x;
     @XmlAttribute(name="y")
-    public double getY() {
-        return y;
-    }
-
+    double y;
 
     public void setX(double val) {
         this.x=val;
