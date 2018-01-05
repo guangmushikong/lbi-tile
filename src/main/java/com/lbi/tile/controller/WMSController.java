@@ -14,7 +14,4 @@ public class WMSController {
     @Resource(name="wmsService")
     private WMSService wmsService;
 
-
-
-
 }

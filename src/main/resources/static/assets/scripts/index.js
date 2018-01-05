@@ -42,16 +42,17 @@ function initMap(){
         //"openlayers":basemap_openlayer
         //"晕渲图1":L.tileLayer('http://tile.stamen.com/terrain-background/{z}/{x}/{y}.png'),
     };
-    var gujiao_satellite_xyz_png_Layer = L.tileLayer('xyz/gujiao/{x}/{y}/{z}.png', {maxZoom: 12});
-    var world_satellite_xyz_png_Layer = L.tileLayer('xyz/world/{x}/{y}/{z}.jpeg', {maxZoom: 10});
+    var gujiao_satellite_xyz_png_Layer = L.tileLayer('xyz/gujiao/{x}/{y}/{z}.png', {maxZoom: 17});
+    var world_satellite_xyz_png_Layer = L.tileLayer('xyz/world/{x}/{y}/{z}.jpeg', {maxZoom: 13});
+    var china_city_xyz_png_Layer = L.tileLayer('xyz/city/{x}/{y}/{z}.png', {maxZoom: 13});
     var china_city_xyz_geojson_Layer=initChina_City_xyz_geojson_Layer();
 
     var gujiao_satellite_tms_png_Layer= L.tileLayer("tms/1.0.0/gujiao_satellite_raster@EPSG:900913@png/{z}/{x}/{y}.png", {
-        maxZoom: 12,
+        maxZoom: 17,
         tms: true
     });
     var world_satellite_tms_png_Layer= L.tileLayer("tms/1.0.0/world_satellite_raster@EPSG:900913@jpeg/{z}/{x}/{y}.jpeg", {
-        maxZoom: 10,
+        maxZoom: 13,
         tms: true
     });
     var china_city_tms_png_Layer= L.tileLayer("tms/1.0.0/china_city_polygon@EPSG:900913@png/{z}/{x}/{y}.png", {
@@ -62,6 +63,7 @@ function initMap(){
 
     var overlays={
         '中国城市XYZ(geojson)':china_city_xyz_geojson_Layer,
+        '中国城市XYZ(png)':china_city_xyz_png_Layer,
         '中国城市TMS(png)':china_city_tms_png_Layer,
         '古交卫星XYZ(png)':gujiao_satellite_xyz_png_Layer,
         '古交卫星TMS(png)':gujiao_satellite_tms_png_Layer,

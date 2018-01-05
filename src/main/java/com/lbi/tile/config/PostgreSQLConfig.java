@@ -26,11 +26,12 @@ public class PostgreSQLConfig {
             dataSource.setMinIdle(10);
             dataSource.setMaxIdle(100);
             dataSource.setInitialSize(10);
-            dataSource.setMaxActive(50);
+            dataSource.setMaxActive(100);
             return dataSource;
         } catch (Exception e) {
-            return null;
+           e.printStackTrace();
         }
+        return null;
     }
 
     @Bean(name = "jdbcTemplate")

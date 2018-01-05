@@ -16,10 +16,6 @@ import org.wololo.geojson.GeoJSON;
 import org.wololo.jts2geojson.GeoJSONWriter;
 
 import javax.annotation.Resource;
-import javax.imageio.ImageIO;
-
-import java.awt.image.BufferedImage;
-import java.io.File;
 
 import java.util.*;
 

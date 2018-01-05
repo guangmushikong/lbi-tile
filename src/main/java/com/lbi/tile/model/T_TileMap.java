@@ -24,4 +24,5 @@ public class T_TileMap {
     int tileHeight;
     String mimeType;
     String extension;
+    String fileExtension;
 }
