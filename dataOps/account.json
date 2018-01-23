@@ -7,7 +7,7 @@
       "OS":"CentOS 7.4 64位",
       "parameter":{
         "username":"root",
-        "password":"Cateye@2018",
+        "password":"Cateye@2017",
         "connection":[
           {
             "connectionName":"外网访问",
