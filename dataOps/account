@@ -1,0 +1,9 @@
+------RDS (PostgreSQL数据库实例)------
+driver:org.postgresql.Driver
+url: jdbc:postgresql://rm-2ze378rwv37etj956bo.pg.rds.aliyuncs.com:3432/postgres
+username: postgres
+password: Cateye@2018
+------OSS------
+AccessKeyID:LTAIelgAxlE5sJMB
+AccessKeySecret:RE0tSBGvQjD7EkCNILYfSqC7JGArn3
+Bucket:cateye-data
