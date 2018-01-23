@@ -12,12 +12,12 @@
           {
             "connectionName":"外网访问",
             "connectionType":"ssh",
-            "host-internet":"39.107.104.63",
+            "host":"39.107.104.63",
             "port":"22"
           },{
             "connectionName":"内网访问",
             "connectionType":"ssh",
-            "host-internal":"172.17.6.250",
+            "host":"172.17.6.250",
             "port":"22"
           }
         ]
@@ -36,11 +36,11 @@
         "connection":[
           {
             "connectionName":"外网访问",
-            "host-internet":"rm-2ze378rwv37etj956bo.pg.rds.aliyuncs.com",
+            "host":"rm-2ze378rwv37etj956bo.pg.rds.aliyuncs.com",
             "port":"3432"
           },{
             "connectionName":"内网访问",
-            "host-internal":"rm-2ze378rwv37etj956.pg.rds.aliyuncs.com",
+            "host":"rm-2ze378rwv37etj956.pg.rds.aliyuncs.com",
             "port":"3433"
           }
         ]
