@@ -2,6 +2,8 @@ package com.lbi.tile.service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.aliyun.oss.OSSClient;
+import com.aliyun.oss.model.OSSObject;
 import com.lbi.map.Tile;
 import com.lbi.tile.dao.CityDao;
 import com.lbi.tile.model.Admin_Region;
@@ -28,6 +30,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.List;
 
 
@@ -35,8 +38,11 @@ import java.util.List;
 public class XYZService {
     @Resource(name="cityDao")
     private CityDao cityDao;
+    @Resource(name="ossClient")
+    private OSSClient ossClient;
     @Autowired
     private Environment env;
+    private final String bucketName="cateye-tile";
 
     public byte[] getXYZ_Tile(String layerName,String extension,Tile tile){
         String tileset=layerName+"@EPSG:900913@"+extension;
@@ -45,7 +51,8 @@ public class XYZService {
         if(tileMap.getSType()==1){
             return getRemoteTile(tileMap,tile);
         }else if(tileMap.getSType()==2){
-            return getCacheTile(tileMap,tile);
+            //return getCacheTile(tileMap,tile);
+            return getOSSTile(tileMap,tile);
         }
         return null;
     }
@@ -107,6 +114,35 @@ public class XYZService {
         }
         return null;
     }
+
+    private byte[] getOSSTile(T_TileMap tileMap,Tile tile){
+        byte[] body=null;
+        try{
+            StringBuilder sb=new StringBuilder();
+            sb.append(tileMap.getLayerName());
+            sb.append("/").append(tile.getZ());
+            sb.append("/").append(tile.getX());
+            sb.append("/").append(tile.getY());
+            sb.append(".").append(tileMap.getFileExtension());
+            boolean found = ossClient.doesObjectExist(bucketName, sb.toString());
+            //System.out.println("key:"+sb.toString()+"|"+found);
+            if(found){
+                OSSObject ossObject = ossClient.getObject(bucketName, sb.toString());
+                InputStream in = ossObject.getObjectContent();
+                if(tileMap.getExtension().equalsIgnoreCase("tif")){
+                    body=IOUtils.readFully(in);
+                }else{
+                    BufferedImage image=ImageIO.read(in);
+                    if(image!=null)body=ImageUtil.toByteArray(image);
+                }
+                in.close();
+            }
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+        return body;
+    }
+
 
     public JSONArray getCityRegionByTile(Tile tile){
         JSONArray body=new JSONArray();

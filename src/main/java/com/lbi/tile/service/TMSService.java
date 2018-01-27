@@ -1,5 +1,7 @@
 package com.lbi.tile.service;
 
+import com.aliyun.oss.OSSClient;
+import com.aliyun.oss.model.OSSObject;
 import com.lbi.map.Tile;
 import com.lbi.tile.dao.TMSDao;
 import com.lbi.tile.model.*;
@@ -15,8 +17,6 @@ import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
-import org.springframework.web.util.UriComponents;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.annotation.Resource;
 import javax.imageio.ImageIO;
@@ -24,6 +24,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,8 +33,11 @@ import java.util.List;
 public class TMSService {
     @Resource(name="tmsDao")
     private TMSDao tmsDao;
+    @Resource(name="ossClient")
+    private OSSClient ossClient;
     @Autowired
     private Environment env;
+    private final String bucketName="cateye-tile";
 
     public XmlRoot_TileMapService getTileMapService(String version){
         XmlRoot_TileMapService u = new XmlRoot_TileMapService();
@@ -106,7 +110,8 @@ public class TMSService {
         if(tileMap.getSType()==1){
             return getRemoteTile(tileMap,tile);
         }else if(tileMap.getSType()==2){
-            return getCacheTile(tileMap,tile);
+            //return getCacheTile(tileMap,tile);
+            return getOSSTile(tileMap,tile);
         }
 
         return null;
@@ -166,5 +171,33 @@ public class TMSService {
             ex.printStackTrace();
         }
         return null;
+    }
+
+    private byte[] getOSSTile(T_TileMap tileMap,Tile tile){
+        byte[] body=null;
+        try{
+            StringBuilder sb=new StringBuilder();
+            sb.append(tileMap.getLayerName());
+            sb.append("/").append(tile.getZ());
+            sb.append("/").append(tile.getX());
+            sb.append("/").append(tile.getY());
+            sb.append(".").append(tileMap.getFileExtension());
+            boolean found = ossClient.doesObjectExist(bucketName, sb.toString());
+            //System.out.println("key:"+sb.toString()+"|"+found);
+            if(found){
+                OSSObject ossObject = ossClient.getObject(bucketName, sb.toString());
+                InputStream in = ossObject.getObjectContent();
+                if(tileMap.getExtension().equalsIgnoreCase("tif")){
+                    body=IOUtils.readFully(in);
+                }else{
+                    BufferedImage image=ImageIO.read(in);
+                    if(image!=null)body=ImageUtil.toByteArray(image);
+                }
+                in.close();
+            }
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+        return body;
     }
 }

@@ -1,11 +1,7 @@
 package com.lbi.tile.dao;
 
-import com.lbi.map.Tile;
-import com.lbi.map.TileSystem;
 import com.lbi.tile.model.*;
-import com.lbi.util.GeoUtils;
-import com.vividsolutions.jts.geom.Envelope;
-import com.vividsolutions.jts.geom.Geometry;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -117,87 +113,6 @@ public class TMSDao {
                             u.setHref(rs.getString("href"));
                             u.setUnits_per_pixel(rs.getString("units_per_pixel"));
                             u.setOrder(rs.getString("set_order"));
-                            return u;
-                        }
-                    });
-        }catch (Exception ex){
-            ex.printStackTrace();
-        }
-        return list;
-    }
-    public List<Admin_Region> getCityRegionList(Tile tile){
-        List<Admin_Region> list=null;
-        try{
-            Envelope enve= TileSystem.TileXYToBounds(tile);
-            Geometry grid= GeoUtils.GEO_FACTORY.toGeometry(enve);
-            StringBuilder sb=new StringBuilder();
-            String[] fields={"adcode","name","st_astext(geom) as wkt"};
-            sb.append("select ").append(StringUtils.join(fields,',')).append(" from s_ods_city_simplify");
-            sb.append(" where st_intersects(st_geomfromtext(?,4326),geom)");
-            list=jdbcTemplate.query(
-                    sb.toString(),
-                    new Object[]{grid.toText()},
-                    new int[]{Types.VARCHAR},
-                    new RowMapper<Admin_Region>() {
-                        public Admin_Region mapRow(ResultSet rs, int i) throws SQLException {
-                            Admin_Region u=new Admin_Region();
-                            u.setCode(rs.getString("adcode"));
-                            u.setName(rs.getString("name"));
-                            u.setWkt(rs.getString("wkt"));
-                            return u;
-                        }
-                    });
-        }catch (Exception ex){
-            ex.printStackTrace();
-        }
-        return list;
-    }
-    public List<Admin_Region> getCityRegionList2(Tile tile){
-        List<Admin_Region> list=null;
-        try{
-            Envelope enve= TileSystem.TileXYToBounds(tile);
-            Geometry grid=GeoUtils.GEO_FACTORY.toGeometry(enve);
-            StringBuilder sb=new StringBuilder();
-            String[] fields={"adcode","name","st_astext(ST_Transform(geom,900913)) as wkt"};
-            sb.append("select ").append(StringUtils.join(fields,',')).append(" from s_ods_city_simplify");
-            sb.append(" where st_intersects(st_geomfromtext(?,4326),geom)");
-            list=jdbcTemplate.query(
-                    sb.toString(),
-                    new Object[]{grid.toText()},
-                    new int[]{Types.VARCHAR},
-                    new RowMapper<Admin_Region>() {
-                        public Admin_Region mapRow(ResultSet rs, int i) throws SQLException {
-                            Admin_Region u=new Admin_Region();
-                            u.setCode(rs.getString("adcode"));
-                            u.setName(rs.getString("name"));
-                            u.setWkt(rs.getString("wkt"));
-                            return u;
-                        }
-                    });
-        }catch (Exception ex){
-            ex.printStackTrace();
-        }
-        return list;
-    }
-    public List<Map<String,Object>> getPoiList(Tile tile){
-        List<Map<String,Object>> list=null;
-        try{
-            Envelope enve= TileSystem.TileXYToBounds(tile);
-            Geometry grid=GeoUtils.GEO_FACTORY.toGeometry(enve);
-            StringBuilder sb=new StringBuilder();
-            String[] fields={"id","chi_name","st_astext(geom) as wkt"};
-            sb.append("select ").append(StringUtils.join(fields,',')).append(" from navinfo_poi_17q2");
-            sb.append(" where st_intersects(st_geomfromtext(?,4326),geom)");
-            list=jdbcTemplate.query(
-                    sb.toString(),
-                    new Object[]{grid.toText()},
-                    new int[]{Types.VARCHAR},
-                    new RowMapper<Map<String,Object>>() {
-                        public Map<String,Object> mapRow(ResultSet rs, int i) throws SQLException {
-                            Map<String,Object> u=new HashMap<String,Object>();
-                            u.put("id",rs.getLong("id"));
-                            u.put("name",rs.getString("chi_name"));
-                            u.put("wkt",rs.getString("wkt"));
                             return u;
                         }
                     });

@@ -8,6 +8,18 @@ logging:
 spring:
   datasource:
     platform: postgres
-    url: jdbc:postgresql://localhost:5432/postgres
+    ###外网访问
+    ###url: jdbc:postgresql://rm-2ze378rwv37etj956bo.pg.rds.aliyuncs.com:3432/postgres
+    ###内网访问
+    url: jdbc:postgresql://rm-2ze378rwv37etj956.pg.rds.aliyuncs.com:3433/postgres
     username: postgres
-    password: postgres
+    password: Cateye@2018
+
+################### OSS Configuration ##########################
+oss:
+  accessKeyId: LTAIelgAxlE5sJMB
+  accessKeySecret: RE0tSBGvQjD7EkCNILYfSqC7JGArn3
+  ###外网访问
+  ###endpoint: oss-cn-beijing.aliyuncs.com
+  ###内网访问
+  endpoint: oss-cn-beijing-internal.aliyuncs.com

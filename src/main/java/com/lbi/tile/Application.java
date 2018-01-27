@@ -31,13 +31,11 @@ public class Application{
 
     public static void main(String[] args) throws IOException{
         Properties prop=new Properties();
-        //InputStream in=Application.class.getClassLoader().getResourceAsStream("tile.properties");
-        //prop.load(in);
 
-        prop.put("mapserver.host","54.223.166.139");
+        prop.put("mapserver.host","39.107.104.63");
         prop.put("geoserver.host","localhost");
         //prop.put("tiledata.path","F:/BaiduNetdiskDownload");
-        prop.put("tiledata.path","/home/ec2-user/tiledata");
+        //prop.put("tiledata.path","/opt/tiledata");
         List<T_TileMap> list=getTileMapList();
         for(int i=0;i<list.size();i++){
             T_TileMap tileMap=list.get(i);
@@ -54,7 +52,7 @@ public class Application{
         List<T_TileMap> list=null;
         try{
             Class.forName("org.postgresql.Driver");
-            Connection conn= DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres", "postgres", "postgres");
+            Connection conn= DriverManager.getConnection("jdbc:postgresql://rm-2ze378rwv37etj956.pg.rds.aliyuncs.com:3433/postgres", "postgres", "Cateye@2018");
             String sql="select * from t_tile_map order by id";
             Statement stat=conn.createStatement();
             ResultSet rs=stat.executeQuery(sql);
