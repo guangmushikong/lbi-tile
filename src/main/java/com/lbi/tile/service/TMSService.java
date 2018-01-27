@@ -21,11 +21,12 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
+import java.io.*;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
@@ -122,23 +123,8 @@ public class TMSService {
         sb.append("/"+tile.getZ());
         sb.append("/"+tile.getX());
         sb.append("/"+tile.getY()+"."+tileMap.getExtension());
-        CloseableHttpClient httpClient = HttpClients.custom().build();
-        HttpGet httpGet = new HttpGet(sb.toString());
-        try {
-            // 3.发送Get请求
-            CloseableHttpResponse res = httpClient.execute(httpGet);
-            if (res.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-                HttpEntity entity = res.getEntity();
-                //ContentType contentType = ContentType.getOrDefault(entity);
-                //Charset charset = contentType.getCharset();
-                // 获取字节数组
-                byte[] content = EntityUtils.toByteArray(entity);
-                return content;
-            }
-        }catch (Exception ex){
-            ex.printStackTrace();
-        }
-        return null;
+
+        return request(sb.toString());
     }
     private byte[] getCacheTile(T_TileMap tileMap,Tile tile){
         try{
@@ -172,8 +158,18 @@ public class TMSService {
         }
         return null;
     }
-
     private byte[] getOSSTile(T_TileMap tileMap,Tile tile){
+        StringBuilder sb=new StringBuilder();
+        sb.append(tileMap.getLayerName());
+        sb.append("/").append(tile.getZ());
+        sb.append("/").append(tile.getX());
+        sb.append("/").append(tile.getY());
+        sb.append(".").append(tileMap.getFileExtension());
+        Date expiration=new Date(new Date().getTime() + 60000);
+        URL url=ossClient.generatePresignedUrl(bucketName,sb.toString(),expiration);
+        return request(url.toString());
+    }
+    private byte[] getOSSTile2(T_TileMap tileMap,Tile tile){
         byte[] body=null;
         try{
             StringBuilder sb=new StringBuilder();
@@ -197,6 +193,23 @@ public class TMSService {
             }
         }catch (Exception ex){
             ex.printStackTrace();
+        }
+        return body;
+    }
+    private byte[] request(String url){
+        System.out.println(url);
+        byte[] body=null;
+        try{
+            CloseableHttpClient httpClient = HttpClients.custom().build();
+            HttpGet httpGet = new HttpGet(url);
+            CloseableHttpResponse res = httpClient.execute(httpGet);
+            if (res.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+                HttpEntity entity = res.getEntity();
+                body = EntityUtils.toByteArray(entity);
+            }
+            httpClient.close();
+        }catch (IOException e){
+            e.printStackTrace();
         }
         return body;
     }

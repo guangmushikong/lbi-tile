@@ -22,7 +22,12 @@ import java.util.Properties;
 @ComponentScan(basePackages = { "com.lbi.tile" })
 @ServletComponentScan
 public class Application{
-
+    //外网访问
+    //private final static String rds_host="rm-2ze378rwv37etj956bo.pg.rds.aliyuncs.com";
+    //private final static String rds_port="3432";
+    //内网访问
+    private final static String rds_host="rm-2ze378rwv37etj956.pg.rds.aliyuncs.com";
+    private final static String rds_port="3433";
 
     @RequestMapping("/")
     public String index(Model model) {
@@ -52,7 +57,7 @@ public class Application{
         List<T_TileMap> list=null;
         try{
             Class.forName("org.postgresql.Driver");
-            Connection conn= DriverManager.getConnection("jdbc:postgresql://rm-2ze378rwv37etj956.pg.rds.aliyuncs.com:3433/postgres", "postgres", "Cateye@2018");
+            Connection conn= DriverManager.getConnection("jdbc:postgresql://"+rds_host+":"+rds_port+"/postgres", "postgres", "Cateye@2018");
             String sql="select * from t_tile_map order by id";
             Statement stat=conn.createStatement();
             ResultSet rs=stat.executeQuery(sql);
