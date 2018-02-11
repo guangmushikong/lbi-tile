@@ -49,20 +49,20 @@
   ],
   "OSS":[
     {
-      "name":"cateye-data",
-      "region":"华东1",
+      "name":"cateye-tile",
+      "region":"华北2",
       "parameter":{
-        "bucket":"cateye-data",
+        "bucket":"cateye-tile",
         "accessKeyId":"LTAIelgAxlE5sJMB",
         "accessKeySecret":"RE0tSBGvQjD7EkCNILYfSqC7JGArn3",
         "connection":[
           {
             "connectionName":"外网访问",
-            "endpoint":"oss-cn-hangzhou.aliyuncs.com"
+            "endpoint":"oss-cn-beijing.aliyuncs.com"
           },
           {
             "connectionName":"内网访问",
-            "endpoint":"oss-cn-hangzhou-internal.aliyuncs.com"
+            "endpoint":"oss-cn-beijing-internal.aliyuncs.com"
           }
         ]
       }
