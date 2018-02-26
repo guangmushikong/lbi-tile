@@ -5,11 +5,12 @@ function init(){
     resizeMap();
     initCommonStyle();
     initMap();
+    getRemoteIP();
 }
 
 function initCity(){
     $.get(
-        "city/getcitylist.json",
+        "http://39.107.104.63:8080/city/getcitylist.json",
         function(json){
             if(json.success){
                 var list=json.data;
@@ -22,15 +23,13 @@ function initCity(){
                 }
                 $("#m_city").select2();
                 $('#m_city').change(function(){
-                    //changeCity($('#m_city').val());
                     var item=cityList[$('#m_city').val()];
                     mapObj.fitBounds([[item.miny,item.minx],[item.maxy, item.maxx]]);
                 });
             }
         },"json");
 }
-
-function initMap(){
+function initBaseMaps(){
     var basemap_normal=L.tileLayer('http://webrd02.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}');
     var basemap_satellite=L.tileLayer('http://mt3.google.cn/vt/lyrs=y@198&hl=zh-CN&gl=cn&src=app&x={x}&y={y}&z={z}&s=');
     var basemap_terrain=L.tileLayer('http://c.tile.stamen.com/terrain/{z}/{x}/{y}.png');
@@ -38,24 +37,25 @@ function initMap(){
     var baseMaps={
         "地图":basemap_normal,
         "地球":basemap_satellite,
-        "地形":basemap_terrain,
-        //"openlayers":basemap_openlayer
-        //"晕渲图1":L.tileLayer('http://tile.stamen.com/terrain-background/{z}/{x}/{y}.png'),
+        "地形":basemap_terrain
     };
-    var gujiao_satellite_xyz_png_Layer = L.tileLayer('xyz/gujiao/{x}/{y}/{z}.png', {maxZoom: 17});
-    var world_satellite_xyz_png_Layer = L.tileLayer('xyz/world/{x}/{y}/{z}.jpeg', {maxZoom: 13});
-    var china_city_xyz_png_Layer = L.tileLayer('xyz/city/{x}/{y}/{z}.png', {maxZoom: 13});
+    return baseMaps;
+}
+function initOverlays(){
+    var gujiao_satellite_xyz_png_Layer = L.tileLayer('http://39.107.104.63:8080/xyz/gujiao/{x}/{y}/{z}.png', {maxZoom: 17});
+    var world_satellite_xyz_png_Layer = L.tileLayer('http://39.107.104.63:8080/xyz/world/{x}/{y}/{z}.jpeg', {maxZoom: 13});
+    var china_city_xyz_png_Layer = L.tileLayer('http://39.107.104.63:8080/xyz/city/{x}/{y}/{z}.png', {maxZoom: 13});
     var china_city_xyz_geojson_Layer=initChina_City_xyz_geojson_Layer();
 
-    var gujiao_satellite_tms_png_Layer= L.tileLayer("tms/1.0.0/gujiao_satellite_raster@EPSG:900913@png/{z}/{x}/{y}.png", {
+    var gujiao_satellite_tms_png_Layer= L.tileLayer("http://39.107.104.63:8080/tms/1.0.0/gujiao_satellite_raster@EPSG:900913@png/{z}/{x}/{y}.png", {
         maxZoom: 17,
         tms: true
     });
-    var world_satellite_tms_png_Layer= L.tileLayer("tms/1.0.0/world_satellite_raster@EPSG:900913@jpeg/{z}/{x}/{y}.jpeg", {
+    var world_satellite_tms_png_Layer= L.tileLayer("http://39.107.104.63:8080/tms/1.0.0/world_satellite_raster@EPSG:900913@jpeg/{z}/{x}/{y}.jpeg", {
         maxZoom: 13,
         tms: true
     });
-    var china_city_tms_png_Layer= L.tileLayer("tms/1.0.0/china_city_polygon@EPSG:900913@png/{z}/{x}/{y}.png", {
+    var china_city_tms_png_Layer= L.tileLayer("http://39.107.104.63:8080/tms/1.0.0/china_city_polygon@EPSG:900913@png/{z}/{x}/{y}.png", {
         maxZoom: 11,
         tms: true
     });
@@ -70,7 +70,12 @@ function initMap(){
         '世界卫星XYZ(png)':world_satellite_xyz_png_Layer,
         '世界卫星TMS(png)':world_satellite_tms_png_Layer
     };
-
+    return overlays;
+}
+function initMap(){
+    var basemap=L.tileLayer('http://webrd02.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}');
+    var baseMaps=initBaseMaps();
+    var overlays=initOverlays();
 
     //初始化地图控件
     mapObj = L.map('mapbox', {
@@ -79,11 +84,9 @@ function initMap(){
         minZoom:3,
         maxZoom:18,
         zoomControl:false,	//不加载默认zoomControl,
-        layers: [basemap_normal]
+        layers: [basemap]
     });
-    //LayerControl
-    //L.control.layers(overlays).addTo(mapObj);
-    //mapObj.setView([0,39], 6);
+
     var zoomControl = L.control.zoom({
         position: 'bottomright',
         zoomInTitle:'放大',
@@ -135,6 +138,9 @@ function initStatusBar() {
     };
     status.addTo(mapObj);
 }
+function getRemoteIP(){
+    $("#i_show").text("您的访问IP:"+returnCitySN["cip"]);
+}
 function initCommonStyle(){
     commonstyle={};
     var myStyle={
@@ -185,78 +191,9 @@ function initCommonStyle(){
     var marker=new L.Marker({icon:svgIcon});
     commonstyle['poi']=marker;
 }
-/*function  loadGAUL0MVTLayer() {
-    return new L.TileLayer.MVTSource(opts);
-}
 
-function  loadCityMVTLayer() {
-    return new L.TileLayer.MVTSource({
-        url: "city/citymvt/{z}/{x}/{y}",
-        //debug: true,
-        clickableLayers: ['city'],
-        getIDForLayerFeature: function(feature) {
-            return feature.properties.code;
-        },
-        filter: function(feature, context) {
-            if (feature.layer.name === 'city')return true;
-            return false;
-        },
-        onClick: function(evt) {
-            console.log("click");
-        },
-        style: function (feature) {
-            console.log(feature.properties.code+":"+feature.properties.name+"|"+feature.layer.name);
-            //console.log(JSON.stringify(feature));
-            //console.log(JSON.parse(feature));
-            console.log(feature);
-            var style = {};
-            var selected = style.selected = {};
-            var type = feature.type;
-            switch (type) {
-                case 1: //'Point'
-                    // unselected
-                    style.color = '#ff0000';
-                    style.radius = 3;
-                    // selected
-                    selected.color = 'rgba(255,255,0,0.5)';
-                    selected.radius = 5;
-                    break;
-                case 2: //'LineString'
-                    // unselected
-                    style.color = 'rgba(161,217,155,0.8)';
-                    style.size = 3;
-                    // selected
-                    selected.color = 'rgba(255,25,0,0.5)';
-                    selected.size = 3;
-                    break;
-                case 3: //'Polygon'
-                    style.color = 'rgba(149,139,255,0.4)';
-                    style.outline = {
-                        color: 'rgb(20,20,20)',
-                        size: 1
-                    };
-                    style.selected = {
-                        color: 'rgba(255,140,0,0.3)',
-                        outline: {
-                            color: 'rgba(255,140,0,1)',
-                            size: 2
-                        }
-                    };
-                    break;
-            }
-            return style;
-        }
-    });
-}*/
-function initChina_City_tms_png_Layer(){
-    var urlTemplate="tms/1.0.0/lbi:s_ods_city_simplify@EPSG:900913@png/{z}/{x}/{y}.png";
-    return L.tileLayer("tms/1.0.0/lbi:s_ods_city_simplify@EPSG:900913@png/{z}/{x}/{y}.png", {
-        maxZoom: 11,
-        tms: true
-    });
-}
 function initChina_City_xyz_geojson_Layer(){
-    var urlTemplate="xyz/city/{x}/{y}/{z}.json";
+    var urlTemplate="http://39.107.104.63:8080/xyz/city/{x}/{y}/{z}.json";
     return new L.TileLayer.GeoJSON(urlTemplate,
         {
             clipTiles:true,
@@ -285,9 +222,7 @@ function initChina_City_xyz_geojson_Layer(){
             }
         });
 }
-function initChina_City_tms_geojson_Layer(){
 
-}
 
 /**
  * 容器改变触发
@@ -310,100 +245,3 @@ function viewMapOption(){
     var bounds=mapObj.getBounds();
     $("#i_map").text("级别="+mapObj.getZoom()+",中心("+bounds.getCenter().lng.toFixed(6)+","+bounds.getCenter().lat.toFixed(6)+"),边界["+bounds.getSouthWest().lng.toFixed(6)+","+bounds.getNorthEast().lng.toFixed(6)+","+bounds.getSouthWest().lat.toFixed(6)+","+bounds.getNorthEast().lat.toFixed(6)+"]");
 }
-/*
-var opts = {
-    url: "http://spatialserver.spatialdev.com/services/vector-tiles/gadm2014kenya/{z}/{x}/{y}.pbf",
-    //debug: true,
-    clickableLayers: ['gadm0', 'gadm1', 'gadm2', 'gadm3', 'gadm4', 'gadm5'],
-
-    getIDForLayerFeature: function(feature) {
-        return feature.properties.id;
-    },
-
-    /!**
-     * The filter function gets called when iterating though each vector tile feature (vtf). You have access
-     * to every property associated with a given feature (the feature, and the layer). You can also filter
-     * based of the context (each tile that the feature is drawn onto).
-     *
-     * Returning false skips over the feature and it is not drawn.
-     *
-     * @param feature
-     * @returns {boolean}
-     *!/
-    filter: function(feature, context) {
-        if (feature.layer.name === 'gadm1_label' || feature.layer.name === 'gadm1') {
-            return true;
-        }
-
-        return false;
-    },
-
-    /!**
-     * When we want to link events between layers, like clicking on a label and a
-     * corresponding polygon freature, this will return the corresponding mapping
-     * between layers. This provides knowledge of which other feature a given feature
-     * is linked to.
-     *
-     * @param layerName  the layer we want to know the linked layer from
-     * @returns {string} returns corresponding linked layer
-     *!/
-    /!*layerLink: function(layerName) {
-        if (layerName.indexOf('_label') > -1) {
-            return layerName.replace('_label','');
-        }
-        return layerName + '_label';
-    },*!/
-
-    style: function(feature) {
-        var style = {};
-        var selected = style.selected = {};
-
-        var type = feature.type;
-        console.log(feature.properties.id+":"+feature.properties.name+"|"+feature.layer.name);
-        console.log(feature);
-        switch (type) {
-            case 1: //'Point'
-                    // unselected
-                style.color = '#ff0000';
-                style.radius = 3;
-                // selected
-                selected.color = 'rgba(255,255,0,0.5)';
-                selected.radius = 5;
-                break;
-            case 2: //'LineString'
-                    // unselected
-                style.color = 'rgba(161,217,155,0.8)';
-                style.size = 3;
-                // selected
-                selected.color = 'rgba(255,25,0,0.5)';
-                selected.size = 3;
-                break;
-            case 3: //'Polygon'
-                    // unselected
-                style.color = 'rgba(149,139,255,0.4)';
-                style.outline = {
-                    color: 'rgb(20,20,20)',
-                    size: 2
-                };
-                // selected
-                selected.color = 'rgba(255,25,0,0.3)';
-                selected.outline = {
-                    color: '#d9534f',
-                    size: 3
-                };
-        }
-
-        if (feature.layer.name === 'gadm1_label') {
-            style.staticLabel = function() {
-                var style = {
-                    html: feature.properties.name,
-                    iconSize: [125,30],
-                    cssClass: 'label-icon-text'
-                };
-                return style;
-            };
-        }
-
-        return style;
-    }
-}*/

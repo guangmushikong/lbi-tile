@@ -2,7 +2,7 @@ package com.lbi.tile.model.xml;
 
 import javax.xml.bind.annotation.XmlAttribute;
 
-public class Xml_Origin {
+public class Node_Origin {
     @XmlAttribute(name="x")
     double x;
     @XmlAttribute(name="y")

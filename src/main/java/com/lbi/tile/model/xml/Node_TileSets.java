@@ -4,16 +4,16 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import java.util.List;
 
-public class Xml_TileSets {
+public class Node_TileSets {
     @XmlAttribute(name="profile")
     String profile;
     @XmlElement(name = "TileSet")
-    List<Xml_TileSet> tileSets;
+    List<Node_TileSet> tileSets;
 
     public void setProfile(String val) {
         this.profile = val;
     }
-    public void setTileSets(List<Xml_TileSet> val) {
+    public void setTileSets(List<Node_TileSet> val) {
         this.tileSets=val;
     }
 }

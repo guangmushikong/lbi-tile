@@ -2,7 +2,7 @@ package com.lbi.tile.model.xml;
 
 import javax.xml.bind.annotation.XmlAttribute;
 
-public class Xml_TileFormat {
+public class Node_TileFormat {
     @XmlAttribute(name="width")
     int width;
     @XmlAttribute(name="height")

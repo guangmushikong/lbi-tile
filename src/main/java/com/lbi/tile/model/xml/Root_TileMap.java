@@ -5,7 +5,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "TileMap")
-public class XmlRoot_TileMap {
+public class Root_TileMap {
     @XmlAttribute(name="version")
     String version;
     @XmlAttribute(name="tilemapservice")
@@ -19,18 +19,18 @@ public class XmlRoot_TileMap {
     String srs;
 
     @XmlElement(name = "BoundingBox")
-    Xml_BoundingBox boundingBox;
+    Node_BoundingBox boundingBox;
     @XmlElement(name = "Origin")
-    Xml_Origin origin;
+    Node_Origin origin;
     @XmlElement(name = "TileFormat")
-    Xml_TileFormat tileFormat;
+    Node_TileFormat tileFormat;
     @XmlElement(name = "TileSets")
-    Xml_TileSets tileSets;
+    Node_TileSets tileSets;
 
 
     /*@XmlElementWrapper(name = "TileSets")
     @XmlElement(name = "TileSet")
-    public List<T_TileSet> getTileSets() {
+    public List<TileSet> getTileSets() {
         return tileSets;
     }*/
 
@@ -52,16 +52,16 @@ public class XmlRoot_TileMap {
         this.srs = val;
     }
 
-    public void setXBoundingBox(Xml_BoundingBox val) {
+    public void setXBoundingBox(Node_BoundingBox val) {
         this.boundingBox =val;
     }
-    public void setXOrigin(Xml_Origin val) {
+    public void setXOrigin(Node_Origin val) {
         this.origin =val;
     }
-    public void setXTileFormat(Xml_TileFormat val) {
+    public void setXTileFormat(Node_TileFormat val) {
         this.tileFormat =val;
     }
-    public void setTileSets(Xml_TileSets val) {
+    public void setTileSets(Node_TileSets val) {
         this.tileSets=val;
     }
 }

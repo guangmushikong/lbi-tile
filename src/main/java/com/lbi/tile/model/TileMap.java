@@ -5,24 +5,35 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class T_TileMap {
-    int id;
-    String layerName;
+public class TileMap {
+    long id;
+    long serviceId;
     String title;
+    String _abstract;
     String srs;
     String profile;
     String href;
-    String url;
-    int sType;
+
     double minX;
     double minY;
     double maxX;
     double maxY;
     double originX;
     double originY;
-    int tileWidth;
-    int tileHeight;
+
+    int width;
+    int height;
     String mimeType;
     String extension;
+
+    int kind;
+    String source;
     String fileExtension;
+
+    public void setAbstract(String val){
+        this._abstract=val;
+    }
+    public String getAbstract(){
+        return this._abstract;
+    }
 }

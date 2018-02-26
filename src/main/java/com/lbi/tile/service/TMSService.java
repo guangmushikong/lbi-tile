@@ -3,9 +3,8 @@ package com.lbi.tile.service;
 import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.model.OSSObject;
 import com.lbi.map.Tile;
-import com.lbi.tile.dao.TMSDao;
+import com.lbi.tile.config.MyProps;
 import com.lbi.tile.model.*;
-import com.lbi.tile.model.xml.*;
 import com.lbi.util.ImageUtil;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
@@ -14,123 +13,58 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-
 
 @Service("tmsService")
 public class TMSService {
-    @Resource(name="tmsDao")
-    private TMSDao tmsDao;
     @Resource(name="ossClient")
     private OSSClient ossClient;
-    @Autowired
-    private Environment env;
+    @Resource(name="myProps")
+    private MyProps myProps;
     private final String bucketName="cateye-tile";
 
-    public XmlRoot_TileMapService getTileMapService(String version){
-        XmlRoot_TileMapService u = new XmlRoot_TileMapService();
-        u.setVersion(version);
-        u.setServices("http://tms.osgeo.org/1.0.0");
-        u.setTitle("Tile Map Service");
-        u.setAbstract("A Tile Map Service");
-        List<T_TileMap> tileMapList1=tmsDao.getTileMapList();
-        List<Xml_TileMap> tileMapList=new ArrayList<>();
-        for(T_TileMap t_TileMap:tileMapList1){
-            Xml_TileMap x_TileMap=new Xml_TileMap(t_TileMap.getTitle(),t_TileMap.getSrs(),t_TileMap.getProfile(),t_TileMap.getHref());
-            tileMapList.add(x_TileMap);
-        }
-        u.setTileMaps(tileMapList);
-        return u;
-    }
-    public XmlRoot_TileMap getTileMap(
-            String version,
-            String layerName,
-            String srs,
-            String formatExtension){
-        T_TileMap u =tmsDao.getTileMapById(layerName,srs,formatExtension);
-        if(u!=null){
-            XmlRoot_TileMap item=new XmlRoot_TileMap();
-            item.setVersion(version);
-            item.setAbstract("");
-            item.setTitle(u.getTitle());
-            item.setServices("http://"+env.getProperty("mapserver.host")+":8080/tms/1.0.0");
-            item.setSRS(u.getSrs());
-            Xml_BoundingBox boundingBox =new Xml_BoundingBox();
-            boundingBox.setMinX(u.getMinX());
-            boundingBox.setMinY(u.getMinY());
-            boundingBox.setMaxX(u.getMaxX());
-            boundingBox.setMaxY(u.getMaxY());
-            item.setXBoundingBox(boundingBox);
-            Xml_Origin origin =new Xml_Origin();
-            origin.setX(u.getOriginX());
-            origin.setY(u.getOriginY());
-            item.setXOrigin(origin);
-            Xml_TileFormat tileFormat =new Xml_TileFormat();
-            tileFormat.setWidth(u.getTileWidth());
-            tileFormat.setHeight(u.getTileHeight());
-            tileFormat.setMimeType(u.getMimeType());
-            tileFormat.setExtension(u.getExtension());
-            item.setXTileFormat(tileFormat);
-            Xml_TileSets tileSets=new Xml_TileSets();
-            List<Xml_TileSet> tileSetList=new ArrayList<>();
-            List<T_TileSet> tileSetList1=tmsDao.getTileSetListByID(u.getId());
-            for(T_TileSet t_tileSet:tileSetList1){
-                Xml_TileSet x_tileSet=new Xml_TileSet(t_tileSet.getHref(),t_tileSet.getUnits_per_pixel(),t_tileSet.getOrder());
-                tileSetList.add(x_tileSet);
-            }
-            tileSets.setProfile(u.getProfile());
-            tileSets.setTileSets(tileSetList);
-            item.setTileSets(tileSets);
-            return item;
-        }
-        return null;
-    }
     public byte[] getTMS_Tile(
             String version,
             String layerName,
             String srs,
-            String formatExtension,
+            String extension,
             Tile tile){
-        String tileset=layerName+"@"+srs+"@"+formatExtension;
-        T_TileMap tileMap=env.getProperty(tileset,T_TileMap.class);
+        String tileset=layerName+"@"+srs+"@"+extension;
+        TileMap tileMap=myProps.getTileMap(tileset);
         if(tileMap==null)return null;
 
-        if(tileMap.getSType()==1){
+        if(tileMap.getKind()==1){
             return getRemoteTile(tileMap,tile);
-        }else if(tileMap.getSType()==2){
+        }else if(tileMap.getKind()==2){
             //return getCacheTile(tileMap,tile);
             return getOSSTile(tileMap,tile);
         }
 
         return null;
     }
-    private byte[] getRemoteTile(T_TileMap tileMap,Tile tile){
+    private byte[] getRemoteTile(TileMap tileMap, Tile tile){
+        String remoteUrl=tileMap.getSource();
+        remoteUrl=remoteUrl.replace("${geoserver}",myProps.getGeoServer());
         StringBuilder sb=new StringBuilder();
-        sb.append(tileMap.getUrl());
+        sb.append(remoteUrl);
         sb.append("/"+tile.getZ());
         sb.append("/"+tile.getX());
         sb.append("/"+tile.getY()+"."+tileMap.getExtension());
 
         return request(sb.toString());
     }
-    private byte[] getCacheTile(T_TileMap tileMap,Tile tile){
+    private byte[] getCacheTile(TileMap tileMap, Tile tile){
         try{
             StringBuilder sb=new StringBuilder();
-            sb.append(env.getProperty("tiledata.path"));
-            sb.append(File.separator).append(tileMap.getLayerName());
+            sb.append(myProps.getTiledata());
+            sb.append(File.separator).append(tileMap.getTitle());
             sb.append(File.separator).append(tile.getZ());
             sb.append(File.separator).append(tile.getX());
             sb.append(File.separator).append(tile.getY());
@@ -158,9 +92,9 @@ public class TMSService {
         }
         return null;
     }
-    private byte[] getOSSTile(T_TileMap tileMap,Tile tile){
+    private byte[] getOSSTile(TileMap tileMap, Tile tile){
         StringBuilder sb=new StringBuilder();
-        sb.append(tileMap.getLayerName());
+        sb.append(tileMap.getTitle());
         sb.append("/").append(tile.getZ());
         sb.append("/").append(tile.getX());
         sb.append("/").append(tile.getY());
@@ -169,11 +103,11 @@ public class TMSService {
         URL url=ossClient.generatePresignedUrl(bucketName,sb.toString(),expiration);
         return request(url.toString());
     }
-    private byte[] getOSSTile2(T_TileMap tileMap,Tile tile){
+    private byte[] getOSSTile2(TileMap tileMap, Tile tile){
         byte[] body=null;
         try{
             StringBuilder sb=new StringBuilder();
-            sb.append(tileMap.getLayerName());
+            sb.append(tileMap.getTitle());
             sb.append("/").append(tile.getZ());
             sb.append("/").append(tile.getX());
             sb.append("/").append(tile.getY());
@@ -197,7 +131,7 @@ public class TMSService {
         return body;
     }
     private byte[] request(String url){
-        System.out.println(url);
+        //System.out.println(url);
         byte[] body=null;
         try{
             CloseableHttpClient httpClient = HttpClients.custom().build();

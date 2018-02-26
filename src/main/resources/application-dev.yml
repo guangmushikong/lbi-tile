@@ -1,0 +1,15 @@
+################### DataSource Configuration ##########################
+spring:
+  datasource:
+    platform: postgres
+    ###外网访问
+    url: jdbc:postgresql://rm-2ze378rwv37etj956bo.pg.rds.aliyuncs.com:3432/postgres
+################### Service Configuration ##########################
+service:
+  mapserver: 39.107.104.63:8080
+  geoserver: 39.107.104.63:8888
+  tiledata: F:/BaiduNetdiskDownload
+################### OSS Configuration ##########################
+oss:
+  ###外网访问
+  endpoint: oss-cn-beijing.aliyuncs.com

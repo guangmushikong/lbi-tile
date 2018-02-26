@@ -1,6 +1,5 @@
 package com.lbi.tile.controller;
 
-
 import com.alibaba.fastjson.JSONArray;
 import com.lbi.map.Tile;
 import com.lbi.tile.service.XYZService;
@@ -21,14 +20,42 @@ public class XYZController {
     @Resource(name="xyzService")
     private XYZService xyzService;
 
+    @RequestMapping(value="/{version}/{tileset}/{x}/{y}/{z}.{extension}",method = RequestMethod.GET)
+    public ResponseEntity getTile(
+            @PathVariable("version") String version,
+            @PathVariable("tileset") String tileset,
+            @PathVariable("x") int x,
+            @PathVariable("y") int y,
+            @PathVariable("z") int z,
+            @PathVariable("extension") String extension) {
+        System.out.println(tileset+","+x+","+y+","+z);
+        Tile tile=new Tile(x,y,z);
+        int alterY=new Double(Math.pow(2,z)).intValue()-1-y;
+        tile.setY(alterY);
+        String[] args=tileset.split("@");
+        if(extension.equalsIgnoreCase("json")){
+
+        }else if(extension.equalsIgnoreCase("png")){
+            byte[] bytes=xyzService.getXYZ_Tile(version,args[0],args[1],args[2],tile);
+            return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(bytes);
+        }else if(extension.equalsIgnoreCase("jpeg")){
+            byte[] bytes=xyzService.getXYZ_Tile(version,args[0],args[1],args[2],tile);
+            return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(bytes);
+        }else if(extension.equalsIgnoreCase("tif")){
+            byte[] bytes=xyzService.getXYZ_Tile(version,args[0],args[1],args[2],tile);
+            return ResponseEntity.ok().contentType(MediaType.valueOf("image/tif")).body(bytes);
+        }
+        return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
+    }
 
     @RequestMapping(value="/{layerName}/{x}/{y}/{z}.{extension}",method = RequestMethod.GET)
-    public ResponseEntity xyz(
+    public ResponseEntity getXYZ(
             @PathVariable("layerName") String layerName,
             @PathVariable("x") int x,
             @PathVariable("y") int y,
             @PathVariable("z") int z,
             @PathVariable("extension") String extension) {
+        System.out.println(layerName+","+x+","+y+","+z);
         Tile tile=new Tile(x,y,z);
         if(extension.equalsIgnoreCase("json")){
             JSONArray body=xyzService.getCityRegionByTile(tile);

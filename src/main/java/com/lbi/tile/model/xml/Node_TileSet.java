@@ -2,7 +2,7 @@ package com.lbi.tile.model.xml;
 
 import javax.xml.bind.annotation.XmlAttribute;
 
-public class Xml_TileSet {
+public class Node_TileSet {
     @XmlAttribute(name="href")
     String href;
     @XmlAttribute(name="units-per-pixel")
@@ -11,7 +11,7 @@ public class Xml_TileSet {
     String order;
 
 
-    public Xml_TileSet(String href, String units_per_pixel, String order){
+    public Node_TileSet(String href, String units_per_pixel, String order){
         this.order=order;
         this.units_per_pixel=units_per_pixel;
         this.href=href;

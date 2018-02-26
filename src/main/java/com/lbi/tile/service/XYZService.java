@@ -5,9 +5,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.model.OSSObject;
 import com.lbi.map.Tile;
+import com.lbi.tile.config.MyProps;
 import com.lbi.tile.dao.CityDao;
 import com.lbi.tile.model.Admin_Region;
-import com.lbi.tile.model.T_TileMap;
+import com.lbi.tile.model.TileMap;
 import com.lbi.util.ImageUtil;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.WKTReader;
@@ -18,8 +19,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
+
 import org.springframework.stereotype.Service;
 import org.wololo.geojson.GeoJSON;
 import org.wololo.jts2geojson.GeoJSONWriter;
@@ -39,26 +39,38 @@ public class XYZService {
     private CityDao cityDao;
     @Resource(name="ossClient")
     private OSSClient ossClient;
-    @Autowired
-    private Environment env;
+    @Resource(name="myProps")
+    private MyProps myProps;
     private final String bucketName="cateye-tile";
 
-    public byte[] getXYZ_Tile(String layerName,String extension,Tile tile){
-        String tileset=layerName+"@EPSG:900913@"+extension;
-        T_TileMap tileMap=env.getProperty(tileset,T_TileMap.class);
+    public byte[] getXYZ_Tile(
+            String version,
+            String layerName,
+            String srs,
+            String extension,
+            Tile tile){
+        String tileset=layerName+"@"+srs+"@"+extension;
+        TileMap tileMap=myProps.getXYZMap(tileset);
         if(tileMap==null)return null;
-        if(tileMap.getSType()==1){
+
+        if(tileMap.getKind()==1){
             return getRemoteTile(tileMap,tile);
-        }else if(tileMap.getSType()==2){
+        }else if(tileMap.getKind()==2){
             //return getCacheTile(tileMap,tile);
             return getOSSTile(tileMap,tile);
         }
+
         return null;
     }
+    public byte[] getXYZ_Tile(String layerName,String extension,Tile tile){
+        return getXYZ_Tile("1.0.0",layerName,"EPSG:900913",extension,tile);
+    }
 
-    private byte[] getRemoteTile(T_TileMap tileMap,Tile tile){
+    private byte[] getRemoteTile(TileMap tileMap, Tile tile){
+        String remoteUrl=tileMap.getSource();
+        remoteUrl=remoteUrl.replace("${geoserver}",myProps.getGeoServer());
         StringBuilder sb=new StringBuilder();
-        sb.append(tileMap.getUrl());
+        sb.append(remoteUrl);
         sb.append("/"+tile.getZ());
         sb.append("/"+tile.getX());
         sb.append("/"+tile.getY()+"."+tileMap.getExtension());
@@ -66,11 +78,11 @@ public class XYZService {
         return request(sb.toString());
     }
 
-    private byte[] getCacheTile(T_TileMap tileMap,Tile tile){
+    private byte[] getCacheTile(TileMap tileMap, Tile tile){
         try{
             StringBuilder sb=new StringBuilder();
-            sb.append(env.getProperty("tiledata.path"));
-            sb.append(File.separator).append(tileMap.getLayerName());
+            sb.append(myProps.getTiledata());
+            sb.append(File.separator).append(tileMap.getTitle());
             sb.append(File.separator).append(tile.getZ());
             sb.append(File.separator).append(tile.getX());
             sb.append(File.separator).append(tile.getY());
@@ -98,9 +110,9 @@ public class XYZService {
         }
         return null;
     }
-    private byte[] getOSSTile(T_TileMap tileMap,Tile tile){
+    private byte[] getOSSTile(TileMap tileMap, Tile tile){
         StringBuilder sb=new StringBuilder();
-        sb.append(tileMap.getLayerName());
+        sb.append(tileMap.getTitle());
         sb.append("/").append(tile.getZ());
         sb.append("/").append(tile.getX());
         sb.append("/").append(tile.getY());
@@ -110,11 +122,11 @@ public class XYZService {
         return request(url.toString());
     }
 
-    private byte[] getOSSTile2(T_TileMap tileMap,Tile tile){
+    private byte[] getOSSTile2(TileMap tileMap, Tile tile){
         byte[] body=null;
         try{
             StringBuilder sb=new StringBuilder();
-            sb.append(tileMap.getLayerName());
+            sb.append(tileMap.getTitle());
             sb.append("/").append(tile.getZ());
             sb.append("/").append(tile.getX());
             sb.append("/").append(tile.getY());
@@ -166,6 +178,7 @@ public class XYZService {
     }
 
     private byte[] request(String url){
+        System.out.println("url:"+url);
         byte[] body=null;
         try{
             CloseableHttpClient httpClient = HttpClients.custom().build();

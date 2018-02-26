@@ -2,7 +2,7 @@ package com.lbi.tile.model.xml;
 
 import javax.xml.bind.annotation.XmlAttribute;
 
-public class Xml_BoundingBox {
+public class Node_BoundingBox {
     @XmlAttribute(name="minx")
     double minx;
     @XmlAttribute(name="miny")
