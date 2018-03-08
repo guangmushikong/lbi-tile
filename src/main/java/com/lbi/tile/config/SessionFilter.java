@@ -1,9 +1,11 @@
 package com.lbi.tile.config;
 
+import com.lbi.tile.dao.LogDao;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.core.annotation.Order;
 
+import javax.annotation.Resource;
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
@@ -15,6 +17,9 @@ import static org.apache.commons.lang3.StringUtils.isNoneEmpty;
 @WebFilter(filterName = "sessionFilter", urlPatterns = "/*")
 @Slf4j
 public class SessionFilter implements Filter {
+    @Resource(name="logDao")
+    private LogDao logDao;
+
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
         long star = System.currentTimeMillis();
         HttpServletRequest request=(HttpServletRequest)req;
@@ -42,9 +47,13 @@ public class SessionFilter implements Filter {
         chain.doFilter(req, res);
         long end = System.currentTimeMillis();
         MDC.put("ip", remoteAddr);
-        MDC.put("duration", String.valueOf (end - star));
+        long duration=(end - star);
+        MDC.put("duration", String.valueOf (duration));
         MDC.put("method", method);
         log.info(url);
+        if(logDao!=null){
+            logDao.addLog(remoteAddr,url,method,duration);
+        }
     }
     public void init(FilterConfig filterConfig) {}
 

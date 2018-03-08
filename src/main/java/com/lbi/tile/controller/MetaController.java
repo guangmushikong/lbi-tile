@@ -1,5 +1,8 @@
 package com.lbi.tile.controller;
 
+import com.lbi.tile.model.ResultBody;
+import com.lbi.tile.model.TileMap;
+import com.lbi.tile.model.TileSet;
 import com.lbi.tile.model.xml.Root_Services;
 import com.lbi.tile.model.xml.Root_TileMap;
 import com.lbi.tile.model.xml.Root_TileMapService;
@@ -10,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 
 @RestController
@@ -62,5 +66,21 @@ public class MetaController {
             return ResponseEntity.ok().contentType(MediaType.APPLICATION_XML).body(u);
         }
         return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
+    }
+
+    @RequestMapping(value="/meta/maps", method = RequestMethod.GET)
+    public ResultBody getMapList() {
+        List<TileMap> list=metaService.getTileMapList();
+        return new ResultBody(list);
+    }
+    @RequestMapping(value="/meta/maps/{mapid}", method = RequestMethod.GET)
+    public ResultBody getMapById(@PathVariable("mapid") Long mapid) {
+        TileMap map=metaService.getTileMapById(mapid);
+        return new ResultBody(map);
+    }
+    @RequestMapping(value="/meta/maps/{mapid}/mapsets", method = RequestMethod.GET)
+    public ResultBody getMapSetList(@PathVariable("mapid") Long mapid) {
+        List<TileSet> list=metaService.getTileSetList(mapid);
+        return new ResultBody(list);
     }
 }

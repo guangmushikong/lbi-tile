@@ -84,6 +84,24 @@
           }
         ]
       }
+    },{
+      "name":"cmap",
+      "region":"华北2",
+      "parameter":{
+        "bucket":"cmap",
+        "accessKeyId":"LTAIelgAxlE5sJMB",
+        "accessKeySecret":"RE0tSBGvQjD7EkCNILYfSqC7JGArn3",
+        "connection":[
+          {
+            "connectionName":"外网访问",
+            "endpoint":"oss-cn-beijing.aliyuncs.com"
+          },
+          {
+            "connectionName":"内网访问",
+            "endpoint":"oss-cn-beijing-internal.aliyuncs.com"
+          }
+        ]
+      }
     }
   ]
 }

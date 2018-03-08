@@ -110,4 +110,36 @@ public class MetaService {
         }
         return null;
     }
+
+    public List<TileMap> getTileMapList(){
+        List<TileMap> mapList=new ArrayList<>();
+        List<TileMap> list=null;
+        list=metaDao.getTileMapList(1);
+        if(list!=null)mapList.addAll(list);
+        list=metaDao.getTileMapList(2);
+        if(list!=null)mapList.addAll(list);
+        for(TileMap m:mapList){
+            String href=m.getHref();
+            href=href.replace("${mapserver}",myProps.getMapServer());
+            m.setHref(href);
+        }
+        return mapList;
+    }
+
+    public TileMap getTileMapById(long mapId){
+        TileMap m=metaDao.getTileMapById(mapId);
+        String href=m.getHref();
+        href=href.replace("${mapserver}",myProps.getMapServer());
+        m.setHref(href);
+        return m;
+    }
+    public List<TileSet> getTileSetList(long mapId){
+        List<TileSet> mapSetList=metaDao.getTileSetList(mapId);
+        for(TileSet t:mapSetList){
+            String href=t.getHref();
+            href=href.replace("${mapserver}",myProps.getMapServer());
+            t.setHref(href);
+        }
+        return mapSetList;
+    }
 }

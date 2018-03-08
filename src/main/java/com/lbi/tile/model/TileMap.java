@@ -20,6 +20,8 @@ public class TileMap {
     double maxY;
     double originX;
     double originY;
+    int minZoom;
+    int maxZoom;
 
     int width;
     int height;
