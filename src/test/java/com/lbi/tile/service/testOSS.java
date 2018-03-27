@@ -15,20 +15,26 @@ public class testOSS{
     OSSClient ossClient;
     @Before
     public void init(){
-        String accessKeyId="LTAIelgAxlE5sJMB";
-        String accessKeySecret="RE0tSBGvQjD7EkCNILYfSqC7JGArn3";
+        //String accessKeyId="LTAIelgAxlE5sJMB";
+        //String accessKeySecret="RE0tSBGvQjD7EkCNILYfSqC7JGArn3";
+        String accessKeyId="LTAICVzaI6DMGWWa";
+        String accessKeySecret="1oltFu5OS80KcdQcslMVZZ3bP1Px51";
         String endpoint="oss-cn-beijing.aliyuncs.com";
         ossClient = new OSSClient(endpoint, accessKeyId, accessKeySecret);
     }
+
     @Test
     public void once()throws IOException{
         String bucketName="cateye-tile";
         String key="gujiao_satellite_raster/10/829/628.png";
+        //String key="gujiao_satellite_raster/10";
         long star=System.currentTimeMillis();
-        Date expiration=new Date(new Date().getTime() + 300000);
+        long duration=3600*1000;
+        Date expiration=new Date(new Date().getTime() + duration);
         URL url=ossClient.generatePresignedUrl(bucketName,key,expiration);
         System.out.println(url);
     }
+
     @Test
     public void batch()throws IOException{
         String bucketName="cateye-tile";
@@ -44,6 +50,7 @@ public class testOSS{
         long end=System.currentTimeMillis();
         System.out.println("total=1000,cost time="+(end-star)/1000+"ms");
     }
+
     @After
     public void end(){
         if(ossClient!=null)ossClient.shutdown();

@@ -13,6 +13,7 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -28,6 +29,19 @@ public class readLog {
     public void txt2db(){
         String fileName="D:/dev/logs/lbi-tile_output.2018-03-08.log";
         readLog(fileName);
+    }
+    @Test
+    public void getTopIpList(){
+        List<String> filterIPList=new ArrayList<>();
+        filterIPList.add("0:0:0:0:0:0:0:1");
+        filterIPList.add("223.71.139.186");
+        filterIPList.add("223.71.139.187");
+        filterIPList.add("223.71.139.188");
+        filterIPList.add("223.71.139.189");
+        List<String> ipList=logDao.getTopIpList(1,20180301,3,filterIPList);
+        for(String ip:ipList){
+            System.out.println(ip);
+        }
     }
     @Test
     public void testStat(){
