@@ -1,19 +1,10 @@
 package com.lbi.tile.service;
 
-import com.alibaba.fastjson.JSONObject;
+
 import com.lbi.tile.dao.CityDao;
-import com.lbi.map.Tile;
-import com.lbi.tile.model.Admin_Region;
 
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.io.WKTReader;
-
-
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import org.wololo.geojson.GeoJSON;
-import org.wololo.jts2geojson.GeoJSONWriter;
 
 import javax.annotation.Resource;
 
@@ -28,31 +19,7 @@ public class CityService {
     public List<Map<String,String>> getCityList(){
         return cityDao.getCityList();
     }
-    public List<JSONObject> getCityRegionByTile(Tile tile){
-        List<JSONObject> result=new ArrayList<JSONObject>();
-        try{
-            List<Admin_Region> list=cityDao.getCityRegionList(tile);
-            if(list!=null){
-                WKTReader wktReader=new WKTReader();
-                GeoJSONWriter geoJSONWriter=new GeoJSONWriter();
-                for(Admin_Region u:list){
-                    Geometry geom=wktReader.read(u.getWkt());
-                    GeoJSON geojson=geoJSONWriter.write(geom);
-                    JSONObject item=new JSONObject();
-                    JSONObject prop=new JSONObject();
-                    prop.put("code",u.getCode());
-                    prop.put("name",u.getName());
-                    item.put("properties",prop);
-                    item.put("geometry",geojson);
-                    item.put("type","Feature");
-                    result.add(item);
-                }
-            }
-        }catch (Exception ex){
-            ex.printStackTrace();
-        }
-        return result;
-    }
+
     /*public byte[] getCityMVTByTile(Tile tile){
         try{
             List<Admin_Region> list=cityDao.getCityRegionList(tile);

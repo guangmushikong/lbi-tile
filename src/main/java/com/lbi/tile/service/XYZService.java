@@ -6,7 +6,7 @@ import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.model.OSSObject;
 import com.lbi.map.Tile;
 import com.lbi.tile.config.MyProps;
-import com.lbi.tile.dao.CityDao;
+import com.lbi.tile.dao.TileDao;
 import com.lbi.tile.model.Admin_Region;
 import com.lbi.tile.model.TileMap;
 import com.lbi.util.ImageUtil;
@@ -31,12 +31,13 @@ import java.io.*;
 import java.net.URL;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 
 @Service("xyzService")
 public class XYZService {
-    @Resource(name="cityDao")
-    private CityDao cityDao;
+    @Resource(name="tileDao")
+    private TileDao tileDao;
     @Resource(name="ossClient")
     private OSSClient ossClient;
     @Resource(name="myProps")
@@ -154,7 +155,7 @@ public class XYZService {
     public JSONArray getCityRegionByTile(Tile tile){
         JSONArray body=new JSONArray();
         try{
-            List<Admin_Region> list=cityDao.getCityRegionList(tile);
+            List<Admin_Region> list=tileDao.getCityRegionList(tile);
             if(list!=null){
                 WKTReader wktReader=new WKTReader();
                 GeoJSONWriter geoJSONWriter=new GeoJSONWriter();
@@ -165,6 +166,85 @@ public class XYZService {
                     JSONObject prop=new JSONObject();
                     prop.put("code",u.getCode());
                     prop.put("name",u.getName());
+                    item.put("properties",prop);
+                    item.put("geometry",geojson);
+                    item.put("type","Feature");
+                    body.add(item);
+                }
+            }
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+        return body;
+    }
+
+    public JSONArray getGujiaoContour50ByTile(Tile tile){
+        JSONArray body=new JSONArray();
+        try{
+            List<Map<String,String>> list=tileDao.getGeometryByTile("gujiao_50",tile);
+            if(list!=null){
+                WKTReader wktReader=new WKTReader();
+                GeoJSONWriter geoJSONWriter=new GeoJSONWriter();
+                for(Map<String,String> u:list){
+                    String wkt=u.get("wkt");
+                    Geometry geom=wktReader.read(wkt);
+                    GeoJSON geojson=geoJSONWriter.write(geom);
+                    JSONObject item=new JSONObject();
+                    JSONObject prop=new JSONObject();
+                    prop.put("id",u.get("id"));
+                    prop.put("contour",u.get("contour"));
+                    item.put("properties",prop);
+                    item.put("geometry",geojson);
+                    item.put("type","Feature");
+                    body.add(item);
+                }
+            }
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+        return body;
+    }
+    public JSONArray getGujiaoContour100ByTile(Tile tile){
+        JSONArray body=new JSONArray();
+        try{
+            List<Map<String,String>> list=tileDao.getGeometryByTile("gujiao_100",tile);
+            if(list!=null){
+                WKTReader wktReader=new WKTReader();
+                GeoJSONWriter geoJSONWriter=new GeoJSONWriter();
+                for(Map<String,String> u:list){
+                    String wkt=u.get("wkt");
+                    Geometry geom=wktReader.read(wkt);
+                    GeoJSON geojson=geoJSONWriter.write(geom);
+                    JSONObject item=new JSONObject();
+                    JSONObject prop=new JSONObject();
+                    prop.put("id",u.get("id"));
+                    prop.put("contour",u.get("contour"));
+                    item.put("properties",prop);
+                    item.put("geometry",geojson);
+                    item.put("type","Feature");
+                    body.add(item);
+                }
+            }
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+        return body;
+    }
+    public JSONArray getGujiaoContour200ByTile(Tile tile){
+        JSONArray body=new JSONArray();
+        try{
+            List<Map<String,String>> list=tileDao.getGeometryByTile("gujiao_200",tile);
+            if(list!=null){
+                WKTReader wktReader=new WKTReader();
+                GeoJSONWriter geoJSONWriter=new GeoJSONWriter();
+                for(Map<String,String> u:list){
+                    String wkt=u.get("wkt");
+                    Geometry geom=wktReader.read(wkt);
+                    GeoJSON geojson=geoJSONWriter.write(geom);
+                    JSONObject item=new JSONObject();
+                    JSONObject prop=new JSONObject();
+                    prop.put("id",u.get("id"));
+                    prop.put("contour",u.get("contour"));
                     item.put("properties",prop);
                     item.put("geometry",geojson);
                     item.put("type","Feature");

@@ -28,12 +28,25 @@ public class XYZController {
             @PathVariable("y") int y,
             @PathVariable("z") int z,
             @PathVariable("extension") String extension) {
-        System.out.println(tileset+","+x+","+y+","+z);
+        //System.out.println(tileset+","+x+","+y+","+z);
         Tile tile=new Tile(x,y,z);
         int alterY=new Double(Math.pow(2,z)).intValue()-1-y;
         tile.setY(alterY);
         String[] args=tileset.split("@");
-        if(extension.equalsIgnoreCase("json")){
+        if(extension.equalsIgnoreCase("geojson")){
+            tile=new Tile(x,y,z);
+            String layerName=args[0];
+            JSONArray body=null;
+            if(layerName.equalsIgnoreCase("gujiao_contour50_line")){
+                body=xyzService.getGujiaoContour50ByTile(tile);
+            }else if(layerName.equalsIgnoreCase("gujiao_contour100_line")){
+                body=xyzService.getGujiaoContour100ByTile(tile);
+            }else if(layerName.equalsIgnoreCase("gujiao_contour200_line")){
+                body=xyzService.getGujiaoContour200ByTile(tile);
+            }else if(layerName.equalsIgnoreCase("china_city_polygon")){
+                body=xyzService.getCityRegionByTile(tile);
+            }
+            if(body!=null)return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(body);
 
         }else if(extension.equalsIgnoreCase("png")){
             byte[] bytes=xyzService.getXYZ_Tile(version,args[0],args[1],args[2],tile);
@@ -55,11 +68,20 @@ public class XYZController {
             @PathVariable("y") int y,
             @PathVariable("z") int z,
             @PathVariable("extension") String extension) {
-        System.out.println(layerName+","+x+","+y+","+z);
+        //System.out.println(layerName+","+x+","+y+","+z);
         Tile tile=new Tile(x,y,z);
         if(extension.equalsIgnoreCase("json")){
-            JSONArray body=xyzService.getCityRegionByTile(tile);
-            return new ResponseEntity<JSONArray>(body, HttpStatus.OK);
+            JSONArray body=null;
+            if(layerName.equalsIgnoreCase("gujiao_contour50_line")){
+                body=xyzService.getGujiaoContour50ByTile(tile);
+            }else if(layerName.equalsIgnoreCase("gujiao_contour100_line")){
+                body=xyzService.getGujiaoContour100ByTile(tile);
+            }else if(layerName.equalsIgnoreCase("gujiao_contour200_line")){
+                body=xyzService.getGujiaoContour200ByTile(tile);
+            }else if(layerName.equalsIgnoreCase("city")){
+                body=xyzService.getCityRegionByTile(tile);
+            }
+            if(body!=null)return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(body);
         }else if(extension.equalsIgnoreCase("png")){
             if(layerName.equalsIgnoreCase("gujiao"))layerName="gujiao_satellite_raster";
             else if(layerName.equalsIgnoreCase("city"))layerName="china_city_polygon";

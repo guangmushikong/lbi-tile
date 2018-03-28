@@ -6,8 +6,8 @@ logging:
     com.lbi.tile: INFO
 ################### DataSource Configuration ##########################
 spring:
-  profiles:
-    active: dev
+  ###profiles:
+  ###  active: dev
   datasource:
     platform: postgres
     ###内网访问

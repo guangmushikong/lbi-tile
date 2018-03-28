@@ -72,7 +72,7 @@ public class MetaDao {
         List<TileMap> list=null;
         try{
             StringBuilder sb=new StringBuilder();
-            sb.append("select t1.*,t2.min_zoom,t2.max_zoom from t_tilemap t1 join");
+            sb.append("select t1.*,t2.min_zoom,t2.max_zoom from t_tilemap t1 left join");
             sb.append(" (select map_id,min(sort_order) as min_zoom,max(sort_order) as max_zoom from t_tileset group by map_id) t2");
             sb.append(" on t1.id=t2.map_id");
             sb.append(" where t1.service_id=?");
