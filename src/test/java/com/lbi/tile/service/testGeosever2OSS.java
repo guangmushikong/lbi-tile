@@ -1,8 +1,7 @@
 package com.lbi.tile.service;
 
-import com.lbi.map.Tile;
-import com.lbi.map.TileSystem;
-import com.lbi.tile.model.TileMap;
+import com.lbi.tile.util.Tile;
+import com.lbi.tile.util.TileSystem;
 import com.vividsolutions.jts.geom.Coordinate;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
@@ -12,6 +11,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.junit.Test;
+
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;

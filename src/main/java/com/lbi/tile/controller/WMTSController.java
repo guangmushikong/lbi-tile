@@ -1,7 +1,7 @@
 package com.lbi.tile.controller;
 
 
-import com.lbi.map.Tile;
+
 import com.lbi.tile.service.WMTSService;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;

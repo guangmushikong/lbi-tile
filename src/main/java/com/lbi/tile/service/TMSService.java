@@ -2,10 +2,12 @@ package com.lbi.tile.service;
 
 import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.model.OSSObject;
-import com.lbi.map.Tile;
+
 import com.lbi.tile.config.MyProps;
 import com.lbi.tile.model.*;
-import com.lbi.util.ImageUtil;
+
+import com.lbi.tile.util.ImageUtil;
+import com.lbi.tile.util.Tile;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;

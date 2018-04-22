@@ -1,9 +1,12 @@
 package com.lbi.tile.controller;
 
 import com.alibaba.fastjson.JSONArray;
-import com.lbi.map.Tile;
+
 import com.lbi.tile.service.XYZService;
-import com.lbi.util.ImageUtil;
+
+
+import com.lbi.tile.util.ImageUtil;
+import com.lbi.tile.util.Tile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -28,12 +31,13 @@ public class XYZController {
             @PathVariable("y") int y,
             @PathVariable("z") int z,
             @PathVariable("extension") String extension) {
-        //System.out.println(tileset+","+x+","+y+","+z);
+
         Tile tile=new Tile(x,y,z);
         int alterY=new Double(Math.pow(2,z)).intValue()-1-y;
         tile.setY(alterY);
         String[] args=tileset.split("@");
-        if(extension.equalsIgnoreCase("geojson")){
+        if(extension.equalsIgnoreCase("geojson")
+                ||extension.equalsIgnoreCase("json")){
             tile=new Tile(x,y,z);
             String layerName=args[0];
             JSONArray body=null;
@@ -45,9 +49,11 @@ public class XYZController {
                 body=xyzService.getGujiaoContour200ByTile(tile);
             }else if(layerName.equalsIgnoreCase("china_city_polygon")){
                 body=xyzService.getCityRegionByTile(tile);
+            }else if(layerName.equalsIgnoreCase("gujiao_contour_line")){
+                byte[] bytes=xyzService.getXYZ_Tile(version,args[0],args[1],args[2],tile);
+                return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(bytes);
             }
             if(body!=null)return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(body);
-
         }else if(extension.equalsIgnoreCase("png")){
             byte[] bytes=xyzService.getXYZ_Tile(version,args[0],args[1],args[2],tile);
             return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(bytes);
@@ -88,14 +94,14 @@ public class XYZController {
             int alterY=new Double(Math.pow(2,z)).intValue()-1-y;
             tile.setY(alterY);
             byte[] bytes=xyzService.getXYZ_Tile(layerName,extension,tile);
-            if(bytes==null)bytes=ImageUtil.emptyImage();
+            if(bytes==null)bytes= ImageUtil.emptyImage();
             return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(bytes);
         }else if(extension.equalsIgnoreCase("jpeg")){
             if(layerName.equalsIgnoreCase("world"))layerName="world_satellite_raster";
             int alterY=new Double(Math.pow(2,z)).intValue()-1-y;
             tile.setY(alterY);
             byte[] bytes=xyzService.getXYZ_Tile(layerName,extension,tile);
-            if(bytes==null)bytes=ImageUtil.emptyImage();
+            if(bytes==null)bytes= ImageUtil.emptyImage();
             return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(bytes);
         }else if(extension.equalsIgnoreCase("tif")){
             int alterY=new Double(Math.pow(2,z)).intValue()-1-y;
@@ -104,6 +110,17 @@ public class XYZController {
             if(bytes==null)bytes=ImageUtil.emptyImage();
             return ResponseEntity.ok().contentType(MediaType.valueOf("image/tif")).body(bytes);
         }
+        return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
+    }
+
+    @RequestMapping(value="/contour/{x}/{y}/{z}.json",method = RequestMethod.GET)
+    public ResponseEntity getContour(
+            @PathVariable("x") int x,
+            @PathVariable("y") int y,
+            @PathVariable("z") int z){
+        Tile tile=new Tile(x,y,z);
+        JSONArray body=xyzService.getGujiaoContourByTile(tile);
+        if(body!=null)return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(body);
         return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
     }
 

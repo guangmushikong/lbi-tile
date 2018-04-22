@@ -1,8 +1,9 @@
 package com.lbi.tile.controller;
 
-import com.lbi.map.Tile;
+
 import com.lbi.tile.service.TMSService;
 
+import com.lbi.tile.util.Tile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;

@@ -4,14 +4,14 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.model.OSSObject;
-import com.lbi.map.Tile;
+
 import com.lbi.tile.config.MyProps;
 import com.lbi.tile.dao.TileDao;
 import com.lbi.tile.model.Admin_Region;
 import com.lbi.tile.model.TileMap;
-import com.lbi.util.ImageUtil;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.io.WKTReader;
+
+import com.lbi.tile.util.ImageUtil;
+import com.lbi.tile.util.Tile;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -21,14 +21,13 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 
 import org.springframework.stereotype.Service;
-import org.wololo.geojson.GeoJSON;
-import org.wololo.jts2geojson.GeoJSONWriter;
 
 import javax.annotation.Resource;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -37,11 +36,12 @@ import java.util.Map;
 @Service("xyzService")
 public class XYZService {
     @Resource(name="tileDao")
-    private TileDao tileDao;
+    TileDao tileDao;
     @Resource(name="ossClient")
-    private OSSClient ossClient;
+    OSSClient ossClient;
     @Resource(name="myProps")
-    private MyProps myProps;
+    MyProps myProps;
+
     private final String bucketName="cateye-tile";
 
     public byte[] getXYZ_Tile(
@@ -157,7 +157,7 @@ public class XYZService {
         try{
             List<Admin_Region> list=tileDao.getCityRegionList(tile);
             if(list!=null){
-                WKTReader wktReader=new WKTReader();
+                /*WKTReader wktReader=new WKTReader();
                 GeoJSONWriter geoJSONWriter=new GeoJSONWriter();
                 for(Admin_Region u:list){
                     Geometry geom=wktReader.read(u.getWkt());
@@ -170,7 +170,7 @@ public class XYZService {
                     item.put("geometry",geojson);
                     item.put("type","Feature");
                     body.add(item);
-                }
+                }*/
             }
         }catch (Exception ex){
             ex.printStackTrace();
@@ -181,22 +181,10 @@ public class XYZService {
     public JSONArray getGujiaoContour50ByTile(Tile tile){
         JSONArray body=new JSONArray();
         try{
-            List<Map<String,String>> list=tileDao.getGeometryByTile("gujiao_50",tile);
+            List<JSONObject> list=tileDao.getGeojsonListByTile("gujiao_50",tile);
             if(list!=null){
-                WKTReader wktReader=new WKTReader();
-                GeoJSONWriter geoJSONWriter=new GeoJSONWriter();
-                for(Map<String,String> u:list){
-                    String wkt=u.get("wkt");
-                    Geometry geom=wktReader.read(wkt);
-                    GeoJSON geojson=geoJSONWriter.write(geom);
-                    JSONObject item=new JSONObject();
-                    JSONObject prop=new JSONObject();
-                    prop.put("id",u.get("id"));
-                    prop.put("contour",u.get("contour"));
-                    item.put("properties",prop);
-                    item.put("geometry",geojson);
-                    item.put("type","Feature");
-                    body.add(item);
+                for(JSONObject u:list){
+                    body.add(u);
                 }
             }
         }catch (Exception ex){
@@ -207,22 +195,10 @@ public class XYZService {
     public JSONArray getGujiaoContour100ByTile(Tile tile){
         JSONArray body=new JSONArray();
         try{
-            List<Map<String,String>> list=tileDao.getGeometryByTile("gujiao_100",tile);
+            List<JSONObject> list=tileDao.getGeojsonListByTile("gujiao_100",tile);
             if(list!=null){
-                WKTReader wktReader=new WKTReader();
-                GeoJSONWriter geoJSONWriter=new GeoJSONWriter();
-                for(Map<String,String> u:list){
-                    String wkt=u.get("wkt");
-                    Geometry geom=wktReader.read(wkt);
-                    GeoJSON geojson=geoJSONWriter.write(geom);
-                    JSONObject item=new JSONObject();
-                    JSONObject prop=new JSONObject();
-                    prop.put("id",u.get("id"));
-                    prop.put("contour",u.get("contour"));
-                    item.put("properties",prop);
-                    item.put("geometry",geojson);
-                    item.put("type","Feature");
-                    body.add(item);
+                for(JSONObject u:list){
+                    body.add(u);
                 }
             }
         }catch (Exception ex){
@@ -233,22 +209,10 @@ public class XYZService {
     public JSONArray getGujiaoContour200ByTile(Tile tile){
         JSONArray body=new JSONArray();
         try{
-            List<Map<String,String>> list=tileDao.getGeometryByTile("gujiao_200",tile);
+            List<JSONObject> list=tileDao.getGeojsonListByTile("gujiao_200",tile);
             if(list!=null){
-                WKTReader wktReader=new WKTReader();
-                GeoJSONWriter geoJSONWriter=new GeoJSONWriter();
-                for(Map<String,String> u:list){
-                    String wkt=u.get("wkt");
-                    Geometry geom=wktReader.read(wkt);
-                    GeoJSON geojson=geoJSONWriter.write(geom);
-                    JSONObject item=new JSONObject();
-                    JSONObject prop=new JSONObject();
-                    prop.put("id",u.get("id"));
-                    prop.put("contour",u.get("contour"));
-                    item.put("properties",prop);
-                    item.put("geometry",geojson);
-                    item.put("type","Feature");
-                    body.add(item);
+                for(JSONObject u:list){
+                    body.add(u);
                 }
             }
         }catch (Exception ex){
@@ -257,8 +221,44 @@ public class XYZService {
         return body;
     }
 
+    public JSONArray getGujiaoContourByTile(Tile tile){
+        JSONArray body=new JSONArray();
+        List<JSONObject> list=new ArrayList<>();
+        int z=tile.getZ();
+        if(z<8){
+
+        }else if(z==8){
+            list=tileDao.getContourList("data.gujiao_200_8_new",tile);
+        }else if(z==9){
+            list=tileDao.getContourList("data.gujiao_200_9_new",tile);
+        }else if(z==10){
+            list=tileDao.getContourList("data.gujiao_200_10_new",tile);
+        }else if(z==11){
+            list=tileDao.getContourList("data.gujiao_100_11_new",tile);
+        }else if(z==12){
+            list=tileDao.getContourList("data.gujiao_100_12_new",tile);
+        }else if(z==13){
+            list=tileDao.getContourList("data.gujiao_100_13_new",tile);
+        }else if(z==14){
+            list=tileDao.getContourList("data.gujiao_50_14_new",tile);
+        }else if(z==15){
+            list=tileDao.getContourList("data.gujiao_50_15_new",tile);
+        }else if(z==16){
+            list=tileDao.getContourList("data.gujiao_50_16_new",tile);
+        }else if(z==17){
+            list=tileDao.getContourList("data.gujiao_50_17_new",tile);
+        }else{
+            list=tileDao.getContourList("data.gujiao_50_17_new",tile);
+        }
+        if(!list.isEmpty()){
+            for(JSONObject u:list){
+                body.add(u);
+            }
+        }
+        return body;
+    }
+
     private byte[] request(String url){
-        System.out.println("url:"+url);
         byte[] body=null;
         try{
             CloseableHttpClient httpClient = HttpClients.custom().build();

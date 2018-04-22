@@ -3,9 +3,11 @@ package com.lbi.tile.config;
 import com.aliyun.oss.OSSClient;
 import com.lbi.tile.model.TileMap;
 import org.apache.commons.dbcp.BasicDataSource;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
@@ -18,35 +20,17 @@ import java.util.Map;
 
 @Configuration
 public class RootConfig {
-    @Value("${spring.datasource.url}")
-    String jdbc_url;
-    @Value("${spring.datasource.username}")
-    String jdbc_username;
-    @Value("${spring.datasource.password}")
-    String jdbc_password;
-    @Value("${oss.accessKeyId}")
-    String oss_accessKeyId;
-    @Value("${oss.accessKeySecret}")
-    String oss_accessKeySecret;
-    @Value("${oss.endpoint}")
-    String oss_endpoint;
-    @Value("${service.mapserver}")
-    String mapserver;
-    @Value("${service.geoserver}")
-    String geoserver;
-    @Value("${service.tiledata}")
-    String tiledata;
-
-
+    @Autowired
+    Environment env;
 
     @Bean(name = "dataSource")
     public BasicDataSource getDataSource() {
         try {
             BasicDataSource dataSource = new BasicDataSource();
-            dataSource.setDriverClassName("org.postgresql.Driver");
-            dataSource.setUrl(jdbc_url);
-            dataSource.setUsername(jdbc_username);
-            dataSource.setPassword(jdbc_password);
+            dataSource.setDriverClassName(env.getProperty("spring.datasource.driver-class-name"));
+            dataSource.setUrl(env.getProperty("spring.datasource.url"));
+            dataSource.setUsername(env.getProperty("spring.datasource.username"));
+            dataSource.setPassword(env.getProperty("spring.datasource.password"));
             dataSource.setMinIdle(10);
             dataSource.setMaxIdle(100);
             dataSource.setInitialSize(10);
@@ -64,6 +48,35 @@ public class RootConfig {
         jdbcTemplate.setDataSource(getDataSource());
         return jdbcTemplate;
     }
+
+    @Bean(name = "jdbcTemplate2")
+    public JdbcTemplate getJdbcTemplate2(){
+        JdbcTemplate jdbcTemplate=new JdbcTemplate();
+        try {
+            BasicDataSource dataSource = new BasicDataSource();
+            dataSource.setDriverClassName(env.getProperty("spring.datasource.driver-class-name"));
+            dataSource.setUrl(env.getProperty("spring.datasource2.url"));
+            dataSource.setUsername(env.getProperty("spring.datasource2.username"));
+            dataSource.setPassword(env.getProperty("spring.datasource2.password"));
+            dataSource.setMinIdle(10);
+            dataSource.setMaxIdle(100);
+            dataSource.setInitialSize(10);
+            dataSource.setMaxActive(100);
+            jdbcTemplate.setDataSource(dataSource);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return jdbcTemplate;
+    }
+
+    @Bean(name = "ossClient")
+    public OSSClient getOSSClient(){
+        return new OSSClient(
+                env.getProperty("oss.endpoint"),
+                env.getProperty("oss.accessKeyId"),
+                env.getProperty("oss.accessKeySecret"));
+    }
+
     @Bean(name = "myProps")
     public MyProps getMyProps(){
         MyProps myProps=new MyProps();
@@ -87,14 +100,10 @@ public class RootConfig {
         }
         System.out.println("load TileMap:"+tileMapList.size());
         myProps.setTileMapList(tileMapDict);
-        myProps.setMapServer(mapserver);
-        myProps.setGeoServer(geoserver);
-        myProps.setTiledata(tiledata);
+        myProps.setMapServer(env.getProperty("service.mapserver"));
+        myProps.setGeoServer(env.getProperty("service.geoserver"));
+        myProps.setTiledata(env.getProperty("service.tiledata"));
         return myProps;
-    }
-    @Bean(name = "ossClient")
-    public OSSClient getOSSClient(){
-        return new OSSClient(oss_endpoint, oss_accessKeyId, oss_accessKeySecret);
     }
 
     private List<TileMap> loadTileMap(long serviceId){
