@@ -29,6 +29,7 @@ public class TileMap {
     String extension;
 
     int kind;
+    String group;//图层组
     String source;
     String fileExtension;
 

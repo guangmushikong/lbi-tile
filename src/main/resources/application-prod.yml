@@ -6,24 +6,13 @@ spring:
     url: jdbc:postgresql://rm-2ze378rwv37etj956bo.pg.rds.aliyuncs.com:3432/postgres
     username: postgres
     password: Cateye@2018
-  datasource2:
-    url: jdbc:postgresql://localhost:5433/postgres
-    username: postgres
-    password: postgres
 ################### Service Configuration ##########################
 service:
   mapserver: 39.107.104.63:8080
-  geoserver: 39.107.104.63:8888
-  tiledata: F:/BaiduNetdiskDownload
+  geoserver: localhost:8888
+  tiledata: /opt/tiledata
 ################### OSS Configuration ##########################
 oss:
   accessKeyId: LTAIelgAxlE5sJMB
   accessKeySecret: RE0tSBGvQjD7EkCNILYfSqC7JGArn3
-  endpoint: oss-cn-beijing.aliyuncs.com
-
-################### DEM Data ##########################
-dem:
-  oss:
-    bucket: cateye-tile
-    path: data/gujiao.tif
-    localpath: e:/data/gujiao.tif
+  endpoint: oss-cn-beijing-internal.aliyuncs.com

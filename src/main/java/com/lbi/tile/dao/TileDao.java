@@ -1,9 +1,12 @@
 package com.lbi.tile.dao;
 
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.lbi.tile.model.Admin_Region;
 
+import com.lbi.tile.model.FeatureVO;
+import com.lbi.tile.model.GeometryVO;
 import com.lbi.tile.util.Tile;
 import com.lbi.tile.util.TileSystem;
 import com.vividsolutions.jts.geom.Envelope;
@@ -73,6 +76,8 @@ public class TileDao {
             sb.append(" as geojson from "+tableName);
             sb.append(" where st_intersects(st_geomfromtext('"+grid.toText()+"',4326),ST_Transform(geom,4326))");
 
+            System.out.println(sb.toString());
+
             list=jdbcTemplate.query(
                     sb.toString(),
                     new RowMapper<JSONObject>() {
@@ -95,7 +100,7 @@ public class TileDao {
             StringBuilder sb=new StringBuilder();
             String enveSql="ST_MakeEnvelope("+enve.getMinX()+","+enve.getMinY()+","+enve.getMaxX()+","+enve.getMaxY()+",4326)";
 
-            sb.append("select json_build_object('type','Feature','id',id");
+            /*sb.append("select json_build_object('type','Feature','id',id");
             sb.append(",'geometry',ST_AsGeoJSON(geom)::json");
             sb.append(",'properties',json_build_object('contour',contour)) as geojson");
             sb.append(" from (");
@@ -103,16 +108,77 @@ public class TileDao {
             sb.append(",st_clipbybox2d(geom,"+enveSql+") as geom");
             sb.append(" from "+tableName);
             sb.append(" where st_intersects("+enveSql+",geom)");
-            sb.append(") t");
+            sb.append(") t");*/
+
+            sb.append("select json_build_object('features',array_to_json(array(");
+            sb.append("select json_build_object('geometry',ST_AsGeoJSON(geom)::json,'properties',json_build_object('id',id,'contour',contour),'type','Feature') as geometry");
+            sb.append(" from (");
+            sb.append("select id,contour");
+            sb.append(",st_clipbybox2d(geom,"+enveSql+") as geom");
+            sb.append(" from "+tableName);
+            sb.append(" where st_intersects("+enveSql+",geom)");
+            sb.append(") t))");
+            sb.append(") as features");
 
             list=jdbcTemplate2.query(
                     sb.toString(),
                     new RowMapper<JSONObject>() {
                         public JSONObject mapRow(ResultSet rs, int i) throws SQLException {
-                            String geojson=rs.getString("geojson");
+                            String geojson=rs.getString("features");
                             return JSONObject.parseObject(geojson);
                         }
                     });
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+        return list;
+    }
+
+    public  List<FeatureVO> getContour(String tableName,Tile tile){
+        List<FeatureVO> list=null;
+        try{
+            Envelope enve= TileSystem.TileXYToBounds(tile);
+
+            StringBuilder sb=new StringBuilder();
+            String enveSql="ST_MakeEnvelope("+enve.getMinX()+","+enve.getMinY()+","+enve.getMaxX()+","+enve.getMaxY()+",4326)";
+
+            /*sb.append("select json_build_object('features',array_to_json(array(");
+            sb.append("select json_build_object('geometry',ST_AsGeoJSON(geom)::json,'properties',json_build_object('id',id,'contour',contour),'type','Feature') as geometry");
+            sb.append(" from (");
+            sb.append("select id,contour");
+            sb.append(",st_clipbybox2d(geom,"+enveSql+") as geom");
+            sb.append(" from "+tableName);
+            sb.append(" where st_intersects("+enveSql+",geom)");
+            sb.append(") t))");
+            sb.append(") as features");*/
+            sb.append("select id,contour");
+            sb.append(",ST_AsGeoJSON(st_clipbybox2d(geom,"+enveSql+")) as geojson");
+            sb.append(" from "+tableName);
+            sb.append(" where st_intersects("+enveSql+",geom)");
+
+            list=jdbcTemplate2.query(
+                    sb.toString(),
+                    new RowMapper<FeatureVO>() {
+                        public FeatureVO mapRow(ResultSet rs, int i) throws SQLException {
+                            FeatureVO u=new FeatureVO();
+                            u.setType("Feature");
+
+                            String geojsonStr=rs.getString("geojson");
+                            JSONObject geojson=JSONObject.parseObject(geojsonStr);
+                            GeometryVO geometryVO=new GeometryVO();
+                            geometryVO.setType(geojson.getString("type"));
+                            JSONArray coordinates=geojson.getJSONArray("coordinates");
+                            geometryVO.setCoordinates(coordinates);
+                            u.setGeometry(geometryVO);
+
+                            JSONObject properties=new JSONObject();
+                            properties.put("id",rs.getLong("id"));
+                            properties.put("contour",rs.getLong("contour"));
+                            u.setProperties(properties);
+                            return u;
+                        }
+                    });
+
         }catch (Exception ex){
             ex.printStackTrace();
         }

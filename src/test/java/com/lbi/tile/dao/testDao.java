@@ -121,21 +121,21 @@ public class testDao {
             StringBuilder sb=new StringBuilder();
             String enveSql="ST_MakeEnvelope("+enve.getMinX()+","+enve.getMinY()+","+enve.getMaxX()+","+enve.getMaxY()+",4326)";
 
-            sb.append("select json_build_object('type','Feature','id',id");
-            sb.append(",'geometry',ST_AsGeoJSON(geom)::json");
-            sb.append(",'properties',json_build_object('contour',contour)) as geojson");
+            sb.append("select json_build_object('features',array_to_json(array(");
+            sb.append("select json_build_object('geometry',ST_AsGeoJSON(geom)::json,'properties',json_build_object('id',id,'contour',contour),'type','Feature') as geometry");
             sb.append(" from (");
-            sb.append("select \"ID\" as id,\"CONTOUR\" as contour");
+            sb.append("select id,contour");
             sb.append(",st_clipbybox2d(geom,"+enveSql+") as geom");
-            sb.append(" from data.gujiao_100_11");
+            sb.append(" from data.gujiao_100_11_new");
             sb.append(" where st_intersects("+enveSql+",geom)");
-            sb.append(") t");
+            sb.append(") t))");
+            sb.append(") as features");
 
             list=jdbcTemplate.query(
                     sb.toString(),
                     new RowMapper<JSONObject>() {
                         public JSONObject mapRow(ResultSet rs, int i) throws SQLException {
-                            String geojson=rs.getString("geojson");
+                            String geojson=rs.getString("features");
                             return JSONObject.parseObject(geojson);
                         }
                     });

@@ -8,6 +8,7 @@ import com.aliyun.oss.model.OSSObject;
 import com.lbi.tile.config.MyProps;
 import com.lbi.tile.dao.TileDao;
 import com.lbi.tile.model.Admin_Region;
+import com.lbi.tile.model.FeatureVO;
 import com.lbi.tile.model.TileMap;
 
 import com.lbi.tile.util.ImageUtil;
@@ -256,6 +257,40 @@ public class XYZService {
             }
         }
         return body;
+    }
+
+    public JSONObject getGujiaoContourByTile2(Tile tile){
+        JSONObject result=new JSONObject();
+
+        List<FeatureVO> featureList=new ArrayList<>();
+        int z=tile.getZ();
+        if(z<8){
+
+        }else if(z==8){
+            featureList=tileDao.getContour("data.gujiao_200_8_new",tile);
+        }else if(z==9){
+            featureList=tileDao.getContour("data.gujiao_200_9_new",tile);
+        }else if(z==10){
+            featureList=tileDao.getContour("data.gujiao_200_10_new",tile);
+        }else if(z==11){
+            featureList=tileDao.getContour("data.gujiao_100_11_new",tile);
+        }else if(z==12){
+            featureList=tileDao.getContour("data.gujiao_100_12_new",tile);
+        }else if(z==13){
+            featureList=tileDao.getContour("data.gujiao_100_13_new",tile);
+        }else if(z==14){
+            featureList=tileDao.getContour("data.gujiao_50_14_new",tile);
+        }else if(z==15){
+            featureList=tileDao.getContour("data.gujiao_50_15_new",tile);
+        }else if(z==16){
+            featureList=tileDao.getContour("data.gujiao_50_16_new",tile);
+        }else if(z==17){
+            featureList=tileDao.getContour("data.gujiao_50_17_new",tile);
+        }else{
+            featureList=tileDao.getContour("data.gujiao_50_17_new",tile);
+        }
+        result.put("features",featureList);
+        return result;
     }
 
     private byte[] request(String url){

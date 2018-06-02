@@ -76,7 +76,7 @@ public class MetaDao {
             sb.append(" (select map_id,min(sort_order) as min_zoom,max(sort_order) as max_zoom from t_tileset group by map_id) t2");
             sb.append(" on t1.id=t2.map_id");
             sb.append(" where t1.service_id=?");
-            sb.append(" order by t1.title");
+            sb.append(" order by t1.title,t1.group");
             list=jdbcTemplate.query(
                     sb.toString(),
                     new Object[]{serviceId},
@@ -108,6 +108,7 @@ public class MetaDao {
                             u.setExtension(rs.getString("extension"));
 
                             u.setKind(rs.getInt("kind"));
+                            u.setGroup(rs.getString("group"));
                             u.setSource(rs.getString("source"));
                             u.setFileExtension(rs.getString("file_extension"));
                             return u;
@@ -153,6 +154,7 @@ public class MetaDao {
                             u.setExtension(rs.getString("extension"));
 
                             u.setKind(rs.getInt("kind"));
+                            u.setGroup(rs.getString("group"));
                             u.setSource(rs.getString("source"));
                             u.setFileExtension(rs.getString("file_extension"));
                             return u;
@@ -205,6 +207,7 @@ public class MetaDao {
                             u.setExtension(rs.getString("extension"));
 
                             u.setKind(rs.getInt("kind"));
+                            u.setGroup(rs.getString("group"));
                             u.setSource(rs.getString("source"));
                             u.setFileExtension(rs.getString("file_extension"));
                             return u;

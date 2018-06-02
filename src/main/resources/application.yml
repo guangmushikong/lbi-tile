@@ -1,32 +1,6 @@
 server:
   port: 8080
-# Spring properties
-logging:
-  level:
-    com.lbi.tile: INFO
 ################### DataSource Configuration ##########################
 spring:
   profiles:
     active: dev
-  datasource:
-    platform: postgres
-    ###内网访问
-    driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://rm-2ze378rwv37etj956.pg.rds.aliyuncs.com:3433/postgres
-    username: postgres
-    password: Cateye@2018
-  datasource2:
-    url: jdbc:postgresql://localhost:5433/postgres
-    username: postgres
-    password: postgres
-################### Service Configuration ##########################
-service:
-  mapserver: 39.107.104.63:8080
-  geoserver: localhost:8888
-  tiledata: /opt/tiledata
-################### OSS Configuration ##########################
-oss:
-  accessKeyId: LTAIelgAxlE5sJMB
-  accessKeySecret: RE0tSBGvQjD7EkCNILYfSqC7JGArn3
-  ###内网访问
-  endpoint: oss-cn-beijing-internal.aliyuncs.com

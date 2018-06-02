@@ -53,7 +53,6 @@ public class MetaController {
             @PathVariable("service") String service,
             @PathVariable("version") String version,
             @PathVariable("tileset") String tileset) {
-        System.out.println("version:"+version);
         String[] args=tileset.split("@");
         Root_TileMap u = null;
         if(service.equalsIgnoreCase("xyz")){

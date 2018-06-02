@@ -7,6 +7,8 @@ public class Node_TileMap {
     String title;
     @XmlAttribute(name="srs")
     String srs;
+    @XmlAttribute(name="group")
+    String group;
     @XmlAttribute(name="profile")
     String profile;
     @XmlAttribute(name="href")
@@ -17,5 +19,8 @@ public class Node_TileMap {
         this.srs=srs;
         this.profile=profile;
         this.href=href;
+    }
+    public void setGroup(String val){
+        this.group=val;
     }
 }

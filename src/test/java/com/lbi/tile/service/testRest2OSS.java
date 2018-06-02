@@ -33,11 +33,10 @@ public class testRest2OSS {
         System.out.println(tileUrl);
         String result=getResult(tileUrl);
         System.out.println(result);
-        JSONArray arr= JSONArray.parseArray(result);
-        System.out.println("arr:"+arr.size());
+        //JSONObject obj= JSONObject.parseObject(result);
         String filePath="F:/BaiduNetdiskDownload/"+layerName+"/"+tile.getZ()+"/"+tile.getX()+"/"+tile.getY()+".json";
         isExistTile(tile);
-        saveFile(arr.toJSONString(),filePath);
+        saveFile(result,filePath);
     }
     @Test
     public void multiThreading(){
@@ -104,13 +103,13 @@ public class testRest2OSS {
                 Tile tile=new Tile(x,y,zoom);
                 String tileUrl=getTileUrl(tile);
                 String result=getResult(tileUrl);
-                JSONArray arr= JSONArray.parseArray(result);
-                System.out.println("tile:"+tile.toString()+",arr:"+arr.size());
-                if(arr.size()>0){
+                //JSONArray arr= JSONArray.parseArray(result);
+                System.out.println("tile:"+tile.toString()+",len:"+result.length());
+                if(result.length()>0){
                     m++;
                     String filePath="F:/BaiduNetdiskDownload/"+layerName+"/"+tile.getZ()+"/"+tile.getX()+"/"+tile.getY()+".json";
                     isExistTile(tile);
-                    saveFile(arr.toJSONString(),filePath);
+                    saveFile(result,filePath);
                 }
             }
         }

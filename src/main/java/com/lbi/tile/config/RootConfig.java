@@ -1,8 +1,11 @@
 package com.lbi.tile.config;
 
 import com.aliyun.oss.OSSClient;
+import com.aliyun.oss.model.OSSObject;
 import com.lbi.tile.model.TileMap;
 import org.apache.commons.dbcp.BasicDataSource;
+import org.geotools.coverage.grid.GridCoverage2D;
+import org.geotools.gce.geotiff.GeoTiffReader;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.context.annotation.Bean;
@@ -11,6 +14,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
+import java.io.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
@@ -71,10 +75,30 @@ public class RootConfig {
 
     @Bean(name = "ossClient")
     public OSSClient getOSSClient(){
+        System.out.println("init ossClient");
         return new OSSClient(
                 env.getProperty("oss.endpoint"),
                 env.getProperty("oss.accessKeyId"),
                 env.getProperty("oss.accessKeySecret"));
+
+    }
+
+    @Bean(name = "coverage")
+    public GridCoverage2D getGridCoverage2D(){
+        GridCoverage2D coverage=null;
+        String localPath=env.getProperty("dem.oss.localpath");
+        boolean result=syncDEMData(localPath);
+        System.out.println("dem exist:"+result);
+        if(result){
+            try{
+                GeoTiffReader tifReader = new GeoTiffReader(localPath);
+                coverage = tifReader.read(null);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+        System.out.println("load DEM");
+        return coverage;
     }
 
     @Bean(name = "myProps")
@@ -104,6 +128,41 @@ public class RootConfig {
         myProps.setGeoServer(env.getProperty("service.geoserver"));
         myProps.setTiledata(env.getProperty("service.tiledata"));
         return myProps;
+    }
+
+    private boolean syncDEMData(String localPath){
+        boolean result=true;
+        File file=new File(localPath);
+        if(!file.exists()){
+            System.out.println("sync oss data");
+            OSSClient client=new OSSClient(
+                    env.getProperty("oss.endpoint"),
+                    env.getProperty("oss.accessKeyId"),
+                    env.getProperty("oss.accessKeySecret"));
+            String bucket=env.getProperty("dem.oss.bucket");
+            String ossPath=env.getProperty("dem.oss.path");
+            try{
+                boolean found = client.doesObjectExist(bucket, ossPath);
+                if(found){
+                    OSSObject ossObject = client.getObject(bucket, ossPath);
+                    InputStream in = ossObject.getObjectContent();
+                    int index;
+                    byte[] bytes = new byte[1024];
+                    FileOutputStream downloadFile = new FileOutputStream(localPath);
+                    while ((index = in.read(bytes)) != -1) {
+                        downloadFile.write(bytes, 0, index);
+                        downloadFile.flush();
+                    }
+                    downloadFile.close();
+                    in.close();
+                }else result= false;
+            }catch (Exception e){
+                e.printStackTrace();
+                result= false;
+            }
+            client.shutdown();
+        }
+        return result;
     }
 
     private List<TileMap> loadTileMap(long serviceId){

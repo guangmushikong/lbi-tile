@@ -30,6 +30,12 @@ public class ResultBody<T> implements Serializable {
         this.data = data;
     }
 
+    public ResultBody(int errcode, String errmsg) {
+        this.success=true;
+        this.errcode = errcode;
+        this.errmsg = errmsg;
+    }
+
     public ResultBody(int errcode, String errmsg, T data) {
         this.success=true;
         this.errcode = errcode;

@@ -4,7 +4,6 @@ package com.lbi.tile.config;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-import java.io.InputStream;
 
 /**
  * 服务启动执行

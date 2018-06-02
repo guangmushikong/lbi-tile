@@ -50,6 +50,7 @@ public class MetaService {
             String href=m.getHref();
             href=href.replace("${mapserver}",myProps.getMapServer());
             Node_TileMap nTileMap=new Node_TileMap(m.getTitle(),m.getSrs(),m.getProfile(),href);
+            nTileMap.setGroup(m.getGroup());
             nTileMapList.add(nTileMap);
         }
         u.setTileMaps(nTileMapList);

@@ -2,6 +2,7 @@ package com.lbi.tile.controller;
 
 import com.alibaba.fastjson.JSONArray;
 
+import com.alibaba.fastjson.JSONObject;
 import com.lbi.tile.service.XYZService;
 
 
@@ -119,7 +120,7 @@ public class XYZController {
             @PathVariable("y") int y,
             @PathVariable("z") int z){
         Tile tile=new Tile(x,y,z);
-        JSONArray body=xyzService.getGujiaoContourByTile(tile);
+        JSONObject body=xyzService.getGujiaoContourByTile2(tile);
         if(body!=null)return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(body);
         return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
     }
