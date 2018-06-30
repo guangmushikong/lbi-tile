@@ -24,16 +24,17 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 public class testRest2OSS {
-    final String layerName="gujiao_contour_line_s";
+    final String layerName="jingzhuang_contour_line";
 
     @Test
     public void getTile()throws Exception{
-        Tile tile=new Tile(6645,3163,13);
+        Tile tile=new Tile(202,100,8);
         String tileUrl=getTileUrl(tile);
         System.out.println(tileUrl);
         String result=getResult(tileUrl);
         System.out.println(result);
-        //JSONObject obj= JSONObject.parseObject(result);
+        JSONObject obj= JSONObject.parseObject(result);
+        System.out.println("len:"+obj.getJSONArray("features").size());
         String filePath="F:/BaiduNetdiskDownload/"+layerName+"/"+tile.getZ()+"/"+tile.getX()+"/"+tile.getY()+".json";
         isExistTile(tile);
         saveFile(result,filePath);
@@ -42,11 +43,11 @@ public class testRest2OSS {
     public void multiThreading(){
         ExecutorService pool = Executors.newFixedThreadPool(32);
 
-        double x1 = 111.6810742671935;
-        double y1 = 37.60462333833393;
-        double x2 = 112.52042406708985;
-        double y2 = 38.267318646571766;
-        int zoom=17;
+        double x1 = 104.77085056787423;
+        double y1 = 35.10560793684285;
+        double x2 = 105.14244032110284;
+        double y2 = 35.58053135312061;
+        int zoom=8;
         Tile minTile= TileSystem.LatLongToTile(new Coordinate(x1,y2),zoom);
         Tile maxTile=TileSystem.LatLongToTile(new Coordinate(x2,y1),zoom);
         System.out.println("tile1:"+minTile.toString());
@@ -58,6 +59,7 @@ public class testRest2OSS {
                 n++;
                 final Tile tile = new Tile(x, y, zoom);
                 final String tileUrl=getTileUrl(tile);
+                System.out.println(tileUrl);
                 pool.submit(new Runnable() {
                     @Override
                     public void run() {
@@ -75,7 +77,7 @@ public class testRest2OSS {
                 });
             }
         }
-        pool.shutdown();
+        //pool.shutdown();
         try {
             pool.awaitTermination(30, TimeUnit.MINUTES);
         } catch (InterruptedException e) {
@@ -85,11 +87,10 @@ public class testRest2OSS {
     }
     @Test
     public void batchTile()throws Exception{
-        double x1=111.6810742671935;
-        double y1=37.60462333833393;
-        double x2=112.52042406708985;
-        double y2=38.267318646571766;
-
+        double x1 = 104.77085056787423;
+        double y1 = 35.10560793684285;
+        double x2 = 105.14244032110284;
+        double y2 = 35.58053135312061;
         int zoom=17;
         Tile minTile= TileSystem.LatLongToTile(new Coordinate(x1,y2),zoom);
         Tile maxTile=TileSystem.LatLongToTile(new Coordinate(x2,y1),zoom);
@@ -103,13 +104,15 @@ public class testRest2OSS {
                 Tile tile=new Tile(x,y,zoom);
                 String tileUrl=getTileUrl(tile);
                 String result=getResult(tileUrl);
-                //JSONArray arr= JSONArray.parseArray(result);
-                System.out.println("tile:"+tile.toString()+",len:"+result.length());
-                if(result.length()>0){
-                    m++;
-                    String filePath="F:/BaiduNetdiskDownload/"+layerName+"/"+tile.getZ()+"/"+tile.getX()+"/"+tile.getY()+".json";
-                    isExistTile(tile);
-                    saveFile(result,filePath);
+                if(StringUtils.isNoneEmpty(result)){
+                    JSONObject obj= JSONObject.parseObject(result);
+                    JSONArray arr= obj.getJSONArray("features");
+                    System.out.println("tile:"+tile.toString()+",arr:"+arr.size());
+                    if(arr.size()>0){
+                        String filePath="F:/BaiduNetdiskDownload/"+layerName+"/"+tile.getZ()+"/"+tile.getX()+"/"+tile.getY()+".json";
+                        isExistTile(tile);
+                        saveFile(result,filePath);
+                    }
                 }
             }
         }

@@ -1,9 +1,9 @@
 package com.lbi.tile.service;
 
 import com.lbi.tile.dao.LogDao;
-import com.lbi.tile.dao.MetaDao;
 import com.lbi.tile.model.Stat;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -18,6 +18,10 @@ import java.util.List;
 public class LogService {
     @Resource(name="logDao")
     private LogDao logDao;
+
+    @Value("${spring.table.t_log}")
+    String t_log;
+
     final SimpleDateFormat DATEFORMAT = new SimpleDateFormat("yyyyMMdd");
 
     public List<Stat> getThisDayList(){
@@ -67,7 +71,7 @@ public class LogService {
         sb.append(" select ip,regexp_split_to_table('"+ StringUtils.join(hourList,',')+"',',')::bigint as time");
         sb.append(" from (select regexp_split_to_table('"+StringUtils.join(ipList,',')+"',',') as ip) t");
         sb.append(") t1 left join (");
-        sb.append(" select ip,to_char(log_time,'HH')::bigint as time,count(1) as total from t_log");
+        sb.append(" select ip,to_char(log_time,'HH')::bigint as time,count(1) as total from "+t_log);
         sb.append(" where to_char(log_time,'yyyymmdd')::bigint="+ds);
         sb.append(" and ip in ('"+StringUtils.join(ipList,"','")+"')");
         sb.append(" group by ip,to_char(log_time,'HH')");
@@ -95,7 +99,7 @@ public class LogService {
         sb.append(" select ip,regexp_split_to_table('"+ StringUtils.join(timeList,',')+"',',')::bigint as time");
         sb.append(" from (select regexp_split_to_table('"+StringUtils.join(ipList,',')+"',',') as ip) t");
         sb.append(") t1 left join (");
-        sb.append(" select ip,to_char(log_time,'yyyymmdd')::bigint as time,count(1) as total from t_log");
+        sb.append(" select ip,to_char(log_time,'yyyymmdd')::bigint as time,count(1) as total from "+t_log);
         sb.append(" where to_char(log_time,'yyyymmdd')::bigint>="+ds);
         sb.append(" and ip in ('"+StringUtils.join(ipList,"','")+"')");
         sb.append(" group by ip,to_char(log_time,'yyyymmdd')");
@@ -113,7 +117,7 @@ public class LogService {
 
     private String getTopIP(long ds,int limit,int kind){
         StringBuilder sb=new StringBuilder();
-        sb.append("select ip from t_log");
+        sb.append("select ip from "+t_log);
         if(kind==1){
             sb.append(" where to_char(log_time,'yyyymmdd')::bigint>="+ds);
         }else{

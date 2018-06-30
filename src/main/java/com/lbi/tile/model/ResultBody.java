@@ -31,13 +31,13 @@ public class ResultBody<T> implements Serializable {
     }
 
     public ResultBody(int errcode, String errmsg) {
-        this.success=true;
+        if(errcode==0) this.success=true;
         this.errcode = errcode;
         this.errmsg = errmsg;
     }
 
     public ResultBody(int errcode, String errmsg, T data) {
-        this.success=true;
+        if(errcode==0) this.success=true;
         this.errcode = errcode;
         this.errmsg = errmsg;
         this.data = data;

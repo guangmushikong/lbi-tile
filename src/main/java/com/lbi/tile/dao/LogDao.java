@@ -2,6 +2,7 @@ package com.lbi.tile.dao;
 
 import com.lbi.tile.model.Stat;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -17,9 +18,11 @@ import java.util.List;
 public class LogDao {
     @Resource(name="jdbcTemplate")
     private JdbcTemplate jdbcTemplate;
+    @Value("${spring.table.t_log}")
+    String t_log;
 
     public int addLog(String ip,String message,String method,long usetime){
-        String sql="insert into t_log(ip,message,method,usetime) values(?,?,?,?)";
+        String sql="insert into "+t_log+"(ip,message,method,usetime) values(?,?,?,?)";
         int result=0;
         try{
             result=jdbcTemplate.update(sql,
@@ -42,7 +45,7 @@ public class LogDao {
     }
 
     public int addLog(Date logTime, String ip, String message, String method, long usetime){
-        String sql="insert into t_log(log_time,ip,message,method,usetime) values(?,?,?,?,?)";
+        String sql="insert into "+t_log+"(log_time,ip,message,method,usetime) values(?,?,?,?,?)";
         int result=0;
         try{
             result=jdbcTemplate.update(sql,
@@ -99,7 +102,7 @@ public class LogDao {
         List<String> list=null;
         try{
             StringBuilder sb=new StringBuilder();
-            sb.append("select ip from t_log");
+            sb.append("select ip from "+t_log);
             if(kind==1){
                 sb.append(" where to_char(log_time,'yyyymmdd')::bigint>="+ds);
             }else{

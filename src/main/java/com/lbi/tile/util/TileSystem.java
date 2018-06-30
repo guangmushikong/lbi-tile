@@ -142,7 +142,9 @@ public class TileSystem {
     }
     public static Tile LatLongToTile(Coordinate pt, int levelOfDetail){
         Pixel pixel=LatLongToPixelXY(pt,levelOfDetail);
-        return PixelXYToTileXY(pixel);
+        Tile tile= PixelXYToTileXY(pixel);
+        tile.setZ(levelOfDetail);
+        return tile;
     }
     /**
      *
@@ -240,8 +242,8 @@ public class TileSystem {
      */
     public static Envelope TileXYToBounds(Tile tile){
         Pixel px= TileXYToPixelXY(tile);	//瓦片左上角坐标
-        Pixel minPX=new Pixel(px.getX(),px.getY()+255);
-        Pixel maxPX=new Pixel(px.getX()+255,px.getY());
+        Pixel minPX=new Pixel(px.getX(),px.getY()+256);
+        Pixel maxPX=new Pixel(px.getX()+256,px.getY());
         Coordinate sw= PixelXYToLatLong(minPX, tile.getZ());
         Coordinate ne= PixelXYToLatLong(maxPX, tile.getZ());
         return new Envelope(sw,ne);

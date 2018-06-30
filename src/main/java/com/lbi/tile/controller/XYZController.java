@@ -41,20 +41,13 @@ public class XYZController {
                 ||extension.equalsIgnoreCase("json")){
             tile=new Tile(x,y,z);
             String layerName=args[0];
-            JSONArray body=null;
-            if(layerName.equalsIgnoreCase("gujiao_contour50_line")){
-                body=xyzService.getGujiaoContour50ByTile(tile);
-            }else if(layerName.equalsIgnoreCase("gujiao_contour100_line")){
-                body=xyzService.getGujiaoContour100ByTile(tile);
-            }else if(layerName.equalsIgnoreCase("gujiao_contour200_line")){
-                body=xyzService.getGujiaoContour200ByTile(tile);
-            }else if(layerName.equalsIgnoreCase("china_city_polygon")){
-                body=xyzService.getCityRegionByTile(tile);
-            }else if(layerName.equalsIgnoreCase("gujiao_contour_line")){
+            if(layerName.equalsIgnoreCase("china_city_polygon")){
+                JSONArray body=xyzService.getCityRegionByTile(tile);
+                if(body!=null)return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(body);
+            }else{
                 byte[] bytes=xyzService.getXYZ_Tile(version,args[0],args[1],args[2],tile);
-                return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(bytes);
+                if(bytes!=null)return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(bytes);
             }
-            if(body!=null)return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(body);
         }else if(extension.equalsIgnoreCase("png")){
             byte[] bytes=xyzService.getXYZ_Tile(version,args[0],args[1],args[2],tile);
             return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(bytes);
@@ -120,7 +113,8 @@ public class XYZController {
             @PathVariable("y") int y,
             @PathVariable("z") int z){
         Tile tile=new Tile(x,y,z);
-        JSONObject body=xyzService.getGujiaoContourByTile2(tile);
+        //JSONObject body=xyzService.getGujiaoContourByTile2(tile);
+        JSONObject body=xyzService.getJingZhuangContourByTile(tile);
         if(body!=null)return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(body);
         return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
     }

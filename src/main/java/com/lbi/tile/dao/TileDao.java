@@ -15,6 +15,7 @@ import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.PrecisionModel;
 import org.apache.commons.lang3.StringUtils;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -31,8 +32,11 @@ import java.util.Map;
 public class TileDao {
     @Resource(name="jdbcTemplate")
     private JdbcTemplate jdbcTemplate;
-    @Resource(name="jdbcTemplate2")
-    private JdbcTemplate jdbcTemplate2;
+    /*@Resource(name="jdbcTemplate2")
+    private JdbcTemplate jdbcTemplate2;*/
+
+    @Value("${spring.table.china_city_polygon}")
+    String china_city_polygon;
 
     final GeometryFactory GEO_FACTORY=new GeometryFactory(new PrecisionModel(PrecisionModel.FLOATING),4326);
 
@@ -43,7 +47,7 @@ public class TileDao {
             Geometry grid= GEO_FACTORY.toGeometry(enve);
             StringBuilder sb=new StringBuilder();
             String[] fields={"adcode","name","st_astext(geom) as wkt"};
-            sb.append("select ").append(StringUtils.join(fields,',')).append(" from s_ods_city_simplify");
+            sb.append("select ").append(StringUtils.join(fields,',')).append(" from "+china_city_polygon);
             sb.append(" where st_intersects(st_geomfromtext(?,4326),geom)");
             list=jdbcTemplate.query(
                     sb.toString(),
@@ -100,16 +104,6 @@ public class TileDao {
             StringBuilder sb=new StringBuilder();
             String enveSql="ST_MakeEnvelope("+enve.getMinX()+","+enve.getMinY()+","+enve.getMaxX()+","+enve.getMaxY()+",4326)";
 
-            /*sb.append("select json_build_object('type','Feature','id',id");
-            sb.append(",'geometry',ST_AsGeoJSON(geom)::json");
-            sb.append(",'properties',json_build_object('contour',contour)) as geojson");
-            sb.append(" from (");
-            sb.append("select id,contour");
-            sb.append(",st_clipbybox2d(geom,"+enveSql+") as geom");
-            sb.append(" from "+tableName);
-            sb.append(" where st_intersects("+enveSql+",geom)");
-            sb.append(") t");*/
-
             sb.append("select json_build_object('features',array_to_json(array(");
             sb.append("select json_build_object('geometry',ST_AsGeoJSON(geom)::json,'properties',json_build_object('id',id,'contour',contour),'type','Feature') as geometry");
             sb.append(" from (");
@@ -119,8 +113,8 @@ public class TileDao {
             sb.append(" where st_intersects("+enveSql+",geom)");
             sb.append(") t))");
             sb.append(") as features");
-
-            list=jdbcTemplate2.query(
+            //list=jdbcTemplate2.query(
+            list=jdbcTemplate.query(
                     sb.toString(),
                     new RowMapper<JSONObject>() {
                         public JSONObject mapRow(ResultSet rs, int i) throws SQLException {
@@ -155,8 +149,8 @@ public class TileDao {
             sb.append(",ST_AsGeoJSON(st_clipbybox2d(geom,"+enveSql+")) as geojson");
             sb.append(" from "+tableName);
             sb.append(" where st_intersects("+enveSql+",geom)");
-
-            list=jdbcTemplate2.query(
+            //list=jdbcTemplate2.query(
+            list=jdbcTemplate.query(
                     sb.toString(),
                     new RowMapper<FeatureVO>() {
                         public FeatureVO mapRow(ResultSet rs, int i) throws SQLException {

@@ -293,6 +293,40 @@ public class XYZService {
         return result;
     }
 
+    public JSONObject getJingZhuangContourByTile(Tile tile){
+        JSONObject result=new JSONObject();
+
+        List<FeatureVO> featureList=new ArrayList<>();
+        int z=tile.getZ();
+        if(z<8){
+
+        }else if(z==8){
+            featureList=tileDao.getContour("data.jzh_contour_200_8",tile);
+        }else if(z==9){
+            featureList=tileDao.getContour("data.jzh_contour_200_9",tile);
+        }else if(z==10){
+            featureList=tileDao.getContour("data.jzh_contour_200_10",tile);
+        }else if(z==11){
+            featureList=tileDao.getContour("data.jzh_contour_100_11",tile);
+        }else if(z==12){
+            featureList=tileDao.getContour("data.jzh_contour_100_12",tile);
+        }else if(z==13){
+            featureList=tileDao.getContour("data.jzh_contour_100_13",tile);
+        }else if(z==14){
+            featureList=tileDao.getContour("data.jzh_contour_50_14",tile);
+        }else if(z==15){
+            featureList=tileDao.getContour("data.jzh_contour_50_15",tile);
+        }else if(z==16){
+            featureList=tileDao.getContour("data.jzh_contour_50_16",tile);
+        }else if(z==17){
+            featureList=tileDao.getContour("data.jzh_contour_50_17",tile);
+        }else{
+            featureList=tileDao.getContour("data.jzh_contour_50_17",tile);
+        }
+        result.put("features",featureList);
+        return result;
+    }
+
     private byte[] request(String url){
         byte[] body=null;
         try{

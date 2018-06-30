@@ -8,6 +8,7 @@ import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.gce.geotiff.GeoTiffReader;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
@@ -26,6 +27,8 @@ import java.util.Map;
 public class RootConfig {
     @Autowired
     Environment env;
+    @Value("${spring.table.t_tilemap}")
+    String t_tilemap;
 
     @Bean(name = "dataSource")
     public BasicDataSource getDataSource() {
@@ -53,7 +56,7 @@ public class RootConfig {
         return jdbcTemplate;
     }
 
-    @Bean(name = "jdbcTemplate2")
+    /*@Bean(name = "jdbcTemplate2")
     public JdbcTemplate getJdbcTemplate2(){
         JdbcTemplate jdbcTemplate=new JdbcTemplate();
         try {
@@ -71,7 +74,7 @@ public class RootConfig {
             e.printStackTrace();
         }
         return jdbcTemplate;
-    }
+    }*/
 
     @Bean(name = "ossClient")
     public OSSClient getOSSClient(){
@@ -82,11 +85,11 @@ public class RootConfig {
                 env.getProperty("oss.accessKeySecret"));
 
     }
-
-    @Bean(name = "coverage")
+    /*@Bean(name = "coverage")
     public GridCoverage2D getGridCoverage2D(){
         GridCoverage2D coverage=null;
         String localPath=env.getProperty("dem.oss.localpath");
+        //boolean result=true;
         boolean result=syncDEMData(localPath);
         System.out.println("dem exist:"+result);
         if(result){
@@ -98,6 +101,33 @@ public class RootConfig {
             }
         }
         System.out.println("load DEM");
+        return coverage;
+    }*/
+
+    @Bean(name = "coverage_gujiao")
+    public GridCoverage2D getGridCoverage2D_gujiao(){
+        GridCoverage2D coverage=null;
+        String localPath=env.getProperty("dem.gujiao");
+        try{
+            GeoTiffReader tifReader = new GeoTiffReader(localPath);
+            coverage = tifReader.read(null);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        System.out.println("load gujiao DEM");
+        return coverage;
+    }
+    @Bean(name = "coverage_jingzhuang")
+    public GridCoverage2D getGridCoverage2D_jingzhuang(){
+        GridCoverage2D coverage=null;
+        String localPath=env.getProperty("dem.jingzhuang");
+        try{
+            GeoTiffReader tifReader = new GeoTiffReader(localPath);
+            coverage = tifReader.read(null);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        System.out.println("load jingzhuang DEM");
         return coverage;
     }
 
@@ -169,7 +199,7 @@ public class RootConfig {
         JdbcTemplate jdbcTemplate=getJdbcTemplate();
         List<TileMap> list=null;
         try{
-            String sql="select * from t_tilemap where service_id =? order by id";
+            String sql="select * from "+t_tilemap+" where service_id =? order by id";
             list=jdbcTemplate.query(
                     sql,
                     new Object[]{serviceId},

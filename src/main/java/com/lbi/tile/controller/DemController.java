@@ -7,9 +7,11 @@
 package com.lbi.tile.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.lbi.tile.model.ContourPoint;
 import com.lbi.tile.model.ResultBody;
 import com.lbi.tile.service.DemService;
 import com.vividsolutions.jts.geom.Coordinate;
+import org.apache.commons.collections.ArrayStack;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,22 +38,43 @@ public class DemController {
     private DemService demService;
 
     @RequestMapping(value="/contour",method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResultBody contour(@RequestParam("xys") String xys) {
-        if(StringUtils.isNoneEmpty(xys)){
-            String[] arr=xys.split(";");
-            Coordinate[] coords=new Coordinate[arr.length];
-            for(int i=0;i<arr.length;i++){
-                String tmp=arr[i];
-                String[] pts=tmp.split(",");
-                double x=Double.parseDouble(pts[0]);
-                double y=Double.parseDouble(pts[1]);
-                Coordinate pt=new Coordinate(x,y);
-                coords[i]=pt;
+    public ResultBody contour(
+            @RequestParam(value = "layerName",defaultValue = "") String layerName,
+            @RequestParam("xys") String xys) {
+        try{
+            if(StringUtils.isNoneEmpty(xys)){
+                String[] arr=xys.split(";");
+                List<ContourPoint> ptList=new ArrayList<>();
+                for(int i=0;i<arr.length;i++){
+                    String tmp=arr[i];
+                    String[] pts=tmp.split(",");
+                    double x=Double.parseDouble(pts[0]);
+                    double y=Double.parseDouble(pts[1]);
+                    ContourPoint pt=new ContourPoint();
+                    pt.setLongitude(x);
+                    pt.setLatitude(y);
+                    pt.setKind(1);
+                    ptList.add(pt);
+                }
+                if(ptList.size()>0){
+                    List<ContourPoint> list;
+                    if(layerName.equalsIgnoreCase("jingzhuang")){
+                        list=demService.getHeight_jingzhuang(ptList);
+                    }else if(layerName.equalsIgnoreCase("gujiao")){
+                        list=demService.getHeight_gujiao(ptList);
+                    }else {
+                        list=demService.getHeight_gujiao(ptList);
+                    }
+                    return new ResultBody<>(list);
+                }else{
+                    return new ResultBody<>(-1,"xys数据不能为空");
+                }
+            }else {
+                return new ResultBody<>(-1,"xys不能为空");
             }
-            List<JSONObject> list=demService.getHeight(coords);
-            return new ResultBody<>(list);
-        }else {
-            return new ResultBody<>(-1,"xys不能为空");
+        }catch (Exception e){
+            e.printStackTrace();
+            return new ResultBody<>(-1,e.getMessage());
         }
     }
 }

@@ -6,9 +6,9 @@
  **************************************/
 package com.lbi.tile.service;
 
-import com.alibaba.fastjson.JSONObject;
 import com.lbi.tile.dao.DemDao;
-import com.vividsolutions.jts.geom.*;
+import com.lbi.tile.model.ContourPoint;
+import org.geotools.coverage.grid.GridCoordinates2D;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -26,26 +26,89 @@ import java.util.List;
 public class DemService {
     @Resource(name="demDao")
     DemDao demDao;
-    final GeometryFactory GEO_FACTORY=new GeometryFactory(new PrecisionModel(PrecisionModel.FLOATING),4326);
 
-    public List<JSONObject> getHeight(Coordinate[] coords){
-        List<JSONObject> list=new ArrayList<>();
-        List<Point> pointList;
-        if(coords.length==1){
-            Point point=GEO_FACTORY.createPoint(coords[0]);
-            pointList=demDao.getHeightByPoint(point);
-        }else if(coords.length>1){
-            LineString line=GEO_FACTORY.createLineString(coords);
-            pointList=demDao.getHeightByLineString(line);
-        }else{
-            pointList=new ArrayList<>();
+    public List<ContourPoint> getHeight_gujiao(List<ContourPoint> ptList)throws Exception{
+        //经纬度转像素坐标
+        List<ContourPoint> pixelList=new ArrayList<>();
+        for(ContourPoint point:ptList){
+            GridCoordinates2D pixel=demDao.point2Pixel_gujiao(point.getLongitude(),point.getLatitude());
+            if(pixel==null)return null;
+            point.setX(pixel.x);
+            point.setY(pixel.y);
+            pixelList.add(point);
         }
-        for(Point point:pointList){
-            JSONObject u=new JSONObject();
-            u.put("x",point.getX());
-            u.put("y",point.getY());
-            u.put("height",point.getUserData());
-            list.add(u);
+
+        //线内插值
+        List<ContourPoint> list=new ArrayList<>();
+        if(pixelList.size()>1){
+            //首节点
+            ContourPoint point=pixelList.get(0);
+            double height=demDao.getHeightByPixel_gujiao(point.getX(),point.getY());
+            point.setHeight((int)height);
+            list.add(point);
+
+            for(int i=1;i<pixelList.size();i++){
+                ContourPoint point1=pixelList.get(i-1);
+                ContourPoint point2=pixelList.get(i);
+                height=demDao.getHeightByPixel_gujiao(point2.getX(),point2.getY());
+                point2.setHeight((int)height);
+
+                //线两端点之间插值
+                List<GridCoordinates2D> scanPixellist=demDao.getPixelListByScanLine(point1.getX(),point1.getY(),point2.getX(),point2.getY());
+                List<ContourPoint> scanPointList=demDao.fixPoint_gujiao(scanPixellist,point1,point2);
+                list.addAll(scanPointList);
+
+                list.add(point2);
+            }
+        }else {
+            ContourPoint point=pixelList.get(0);
+            //System.out.println(JSONObject.toJSONString(point));
+            double height=demDao.getHeightByPixel_gujiao(point.getX(),point.getY());
+            point.setHeight((int)height);
+            list.add(point);
+        }
+        return list;
+    }
+
+    public List<ContourPoint> getHeight_jingzhuang(List<ContourPoint> ptList)throws Exception{
+        //经纬度转像素坐标
+        List<ContourPoint> pixelList=new ArrayList<>();
+        for(ContourPoint point:ptList){
+            GridCoordinates2D pixel=demDao.point2Pixel_jingzhuang(point.getLongitude(),point.getLatitude());
+            if(pixel==null)return null;
+            point.setX(pixel.x);
+            point.setY(pixel.y);
+            pixelList.add(point);
+        }
+
+        //线内插值
+        List<ContourPoint> list=new ArrayList<>();
+        if(pixelList.size()>1){
+            //首节点
+            ContourPoint point=pixelList.get(0);
+            double height=demDao.getHeightByPixel_jingzhuang(point.getX(),point.getY());
+            point.setHeight((int)height);
+            list.add(point);
+
+            for(int i=1;i<pixelList.size();i++){
+                ContourPoint point1=pixelList.get(i-1);
+                ContourPoint point2=pixelList.get(i);
+                height=demDao.getHeightByPixel_jingzhuang(point2.getX(),point2.getY());
+                point2.setHeight((int)height);
+
+                //线两端点之间插值
+                List<GridCoordinates2D> scanPixellist=demDao.getPixelListByScanLine(point1.getX(),point1.getY(),point2.getX(),point2.getY());
+                List<ContourPoint> scanPointList=demDao.fixPoint_jingzhuang(scanPixellist,point1,point2);
+                list.addAll(scanPointList);
+
+                list.add(point2);
+            }
+        }else {
+            ContourPoint point=pixelList.get(0);
+            //System.out.println(JSONObject.toJSONString(point));
+            double height=demDao.getHeightByPixel_jingzhuang(point.getX(),point.getY());
+            point.setHeight((int)height);
+            list.add(point);
         }
         return list;
     }

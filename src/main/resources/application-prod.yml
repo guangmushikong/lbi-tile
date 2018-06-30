@@ -6,6 +6,12 @@ spring:
     url: jdbc:postgresql://rm-2ze378rwv37etj956bo.pg.rds.aliyuncs.com:3432/postgres
     username: postgres
     password: Cateye@2018
+  table:
+    china_city_polygon: s_ods_city_simplify
+    t_tilemapservice: t_tilemapservice
+    t_tilemap: t_tilemap
+    t_tileset: t_tileset
+    t_log: t_log
 ################### Service Configuration ##########################
 service:
   mapserver: 39.107.104.63:8080
@@ -16,3 +22,7 @@ oss:
   accessKeyId: LTAIelgAxlE5sJMB
   accessKeySecret: RE0tSBGvQjD7EkCNILYfSqC7JGArn3
   endpoint: oss-cn-beijing-internal.aliyuncs.com
+################### DEM Data ##########################
+dem:
+  gujiao: /opt/tiledata/gujiao.tif
+  jingzhuang: /opt/tiledata/jzhdem_7m.tif

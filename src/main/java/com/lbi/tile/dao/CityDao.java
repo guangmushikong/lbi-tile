@@ -1,6 +1,7 @@
 package com.lbi.tile.dao;
 
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -18,10 +19,13 @@ public class CityDao {
     @Resource(name="jdbcTemplate")
     private JdbcTemplate jdbcTemplate;
 
+    @Value("${spring.table.china_city_polygon}")
+    String china_city_polygon;
+
     public List<Map<String,String>> getCityList(){
         List<Map<String,String>> list=null;
         try{
-            String sql="select adcode,name,name_alias,x,y,minx,miny,maxx,maxy from s_ods_city_simplify order by adcode";
+            String sql="select adcode,name,name_alias,x,y,minx,miny,maxx,maxy from "+china_city_polygon+" order by adcode";
             list=jdbcTemplate.query(
                     sql,
                     new RowMapper<Map<String,String>>() {

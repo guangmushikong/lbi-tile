@@ -3,6 +3,7 @@ package com.lbi.tile.dao;
 import com.lbi.tile.model.TileMap;
 import com.lbi.tile.model.TileSet;
 import com.lbi.tile.model.TileMapService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -18,10 +19,18 @@ public class MetaDao {
     @Resource(name="jdbcTemplate")
     private JdbcTemplate jdbcTemplate;
 
+    //PG Table
+    @Value("${spring.table.t_tilemapservice}")
+    String t_tilemapservice;
+    @Value("${spring.table.t_tilemap}")
+    String t_tilemap;
+    @Value("${spring.table.t_tileset}")
+    String t_tileset;
+
     public List<TileMapService> getTileMapServiceList(){
         List<TileMapService> list=null;
         try{
-            String sql="select * from t_tilemapservice order by id";
+            String sql="select * from "+t_tilemapservice+" order by id";
             list=jdbcTemplate.query(
                     sql,
                     new RowMapper<TileMapService>() {
@@ -44,7 +53,7 @@ public class MetaDao {
 
     public TileMapService getTileMapServiceById(long serviceId){
         try{
-            String sql="select * from t_tilemapservice where id=?";
+            String sql="select * from "+t_tilemapservice+" where id=?";
             List<TileMapService>  list=jdbcTemplate.query(
                     sql,
                     new Object[]{serviceId},
@@ -72,8 +81,8 @@ public class MetaDao {
         List<TileMap> list=null;
         try{
             StringBuilder sb=new StringBuilder();
-            sb.append("select t1.*,t2.min_zoom,t2.max_zoom from t_tilemap t1 left join");
-            sb.append(" (select map_id,min(sort_order) as min_zoom,max(sort_order) as max_zoom from t_tileset group by map_id) t2");
+            sb.append("select t1.*,t2.min_zoom,t2.max_zoom from "+t_tilemap+" t1 left join");
+            sb.append(" (select map_id,min(sort_order) as min_zoom,max(sort_order) as max_zoom from "+t_tileset+" group by map_id) t2");
             sb.append(" on t1.id=t2.map_id");
             sb.append(" where t1.service_id=?");
             sb.append(" order by t1.title,t1.group");
@@ -121,7 +130,7 @@ public class MetaDao {
     }
     public TileMap getTileMapById(long mapId){
         try{
-            String sql="select * from t_tilemap where id=?";
+            String sql="select * from "+t_tilemap+" where id=?";
             List<TileMap> list=jdbcTemplate.query(
                     sql,
                     new Object[]{
@@ -168,7 +177,7 @@ public class MetaDao {
     }
     public TileMap getTileMapById(long serviceId,String title, String srs, String extension){
         try{
-            String sql="select * from t_tilemap where service_id=? and title=? and srs=? and extension=?";
+            String sql="select * from "+t_tilemap+" where service_id=? and title=? and srs=? and extension=?";
             List<TileMap> list=jdbcTemplate.query(
                     sql,
                     new Object[]{
@@ -222,7 +231,7 @@ public class MetaDao {
     public List<TileSet> getTileSetList(long mapId){
         List<TileSet> list=null;
         try{
-            String sql="select * from t_tileset where map_id=? order by sort_order";
+            String sql="select * from "+t_tileset+" where map_id=? order by sort_order";
             list=jdbcTemplate.query(
                     sql,
                     new Object[]{mapId},
