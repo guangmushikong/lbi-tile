@@ -6,6 +6,7 @@ import com.aliyun.oss.model.OSSObject;
 import com.lbi.tile.config.MyProps;
 import com.lbi.tile.model.*;
 
+import com.lbi.tile.util.IOUtils;
 import com.lbi.tile.util.ImageUtil;
 import com.lbi.tile.util.Tile;
 import org.apache.http.HttpEntity;
@@ -120,7 +121,7 @@ public class TMSService {
                 OSSObject ossObject = ossClient.getObject(bucketName, sb.toString());
                 InputStream in = ossObject.getObjectContent();
                 if(tileMap.getExtension().equalsIgnoreCase("tif")){
-                    body=IOUtils.readFully(in);
+                    body= IOUtils.readFully(in);
                 }else{
                     BufferedImage image=ImageIO.read(in);
                     if(image!=null)body=ImageUtil.toByteArray(image);

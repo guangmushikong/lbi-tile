@@ -14,10 +14,7 @@ import com.vividsolutions.jts.geom.Coordinate;
 import org.apache.commons.collections.ArrayStack;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -31,6 +28,7 @@ import java.util.Map;
  * @create 2018/5/7
  * @since 1.0.0
  ************************************/
+@CrossOrigin
 @RestController
 @RequestMapping("/dem")
 public class DemController {

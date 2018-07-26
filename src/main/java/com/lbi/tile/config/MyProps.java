@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component
-//@ConfigurationProperties(prefix="service") //接收application.yml中的service下面的属性
 public class MyProps {
     private String mapserver;
     private String geoserver;

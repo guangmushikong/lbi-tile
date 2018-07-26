@@ -30,9 +30,10 @@ public class RootConfig {
     @Value("${spring.table.t_tilemap}")
     String t_tilemap;
 
-    @Bean(name = "dataSource")
-    public BasicDataSource getDataSource() {
-        try {
+    @Bean(name = "jdbcTemplate")
+    public JdbcTemplate getJdbcTemplate(){
+        JdbcTemplate jdbcTemplate=new JdbcTemplate();
+        try{
             BasicDataSource dataSource = new BasicDataSource();
             dataSource.setDriverClassName(env.getProperty("spring.datasource.driver-class-name"));
             dataSource.setUrl(env.getProperty("spring.datasource.url"));
@@ -42,39 +43,13 @@ public class RootConfig {
             dataSource.setMaxIdle(100);
             dataSource.setInitialSize(10);
             dataSource.setMaxActive(100);
-            return dataSource;
-        } catch (Exception e) {
-           e.printStackTrace();
-        }
-        return null;
-    }
-
-    @Bean(name = "jdbcTemplate")
-    public JdbcTemplate getJdbcTemplate(){
-        JdbcTemplate jdbcTemplate=new JdbcTemplate();
-        jdbcTemplate.setDataSource(getDataSource());
-        return jdbcTemplate;
-    }
-
-    /*@Bean(name = "jdbcTemplate2")
-    public JdbcTemplate getJdbcTemplate2(){
-        JdbcTemplate jdbcTemplate=new JdbcTemplate();
-        try {
-            BasicDataSource dataSource = new BasicDataSource();
-            dataSource.setDriverClassName(env.getProperty("spring.datasource.driver-class-name"));
-            dataSource.setUrl(env.getProperty("spring.datasource2.url"));
-            dataSource.setUsername(env.getProperty("spring.datasource2.username"));
-            dataSource.setPassword(env.getProperty("spring.datasource2.password"));
-            dataSource.setMinIdle(10);
-            dataSource.setMaxIdle(100);
-            dataSource.setInitialSize(10);
-            dataSource.setMaxActive(100);
             jdbcTemplate.setDataSource(dataSource);
-        } catch (Exception e) {
+        }catch (Exception e){
             e.printStackTrace();
         }
         return jdbcTemplate;
-    }*/
+    }
+
 
     @Bean(name = "ossClient")
     public OSSClient getOSSClient(){
@@ -85,24 +60,6 @@ public class RootConfig {
                 env.getProperty("oss.accessKeySecret"));
 
     }
-    /*@Bean(name = "coverage")
-    public GridCoverage2D getGridCoverage2D(){
-        GridCoverage2D coverage=null;
-        String localPath=env.getProperty("dem.oss.localpath");
-        //boolean result=true;
-        boolean result=syncDEMData(localPath);
-        System.out.println("dem exist:"+result);
-        if(result){
-            try{
-                GeoTiffReader tifReader = new GeoTiffReader(localPath);
-                coverage = tifReader.read(null);
-            }catch (Exception e){
-                e.printStackTrace();
-            }
-        }
-        System.out.println("load DEM");
-        return coverage;
-    }*/
 
     @Bean(name = "coverage_gujiao")
     public GridCoverage2D getGridCoverage2D_gujiao(){

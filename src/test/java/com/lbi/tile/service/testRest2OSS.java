@@ -1,9 +1,7 @@
 package com.lbi.tile.service;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.util.IOUtils;
 import com.lbi.tile.util.Tile;
 import com.lbi.tile.util.TileSystem;
 
@@ -15,7 +13,6 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.io.*;
@@ -135,7 +132,7 @@ public class testRest2OSS {
             CloseableHttpResponse res = httpClient.execute(httpGet);
             if (res.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
                 HttpEntity entity = res.getEntity();
-                result= com.lbi.tile.service.IOUtils.readStreamAsString(entity.getContent());
+                result= com.lbi.tile.util.IOUtils.readStreamAsString(entity.getContent());
             }
             httpClient.close();
         }catch (IOException e){

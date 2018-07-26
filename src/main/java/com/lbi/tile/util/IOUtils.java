@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package com.lbi.tile.service;
+package com.lbi.tile.util;
 
 import java.io.*;
 

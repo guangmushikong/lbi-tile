@@ -2,6 +2,7 @@ package com.lbi.tile.service;
 
 import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.model.OSSObject;
+import com.lbi.tile.util.IOUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -43,7 +44,7 @@ public class testOSS{
         for(int i=0;i<1000;i++){
             OSSObject ossObject = ossClient.getObject(bucketName, key);
             InputStream in = ossObject.getObjectContent();
-            byte[] body=IOUtils.readFully(in);
+            byte[] body= IOUtils.readFully(in);
             in.close();
             System.out.println(i+":"+key+",size="+body.length);
         }

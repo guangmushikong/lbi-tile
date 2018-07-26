@@ -11,6 +11,7 @@ import com.lbi.tile.model.Admin_Region;
 import com.lbi.tile.model.FeatureVO;
 import com.lbi.tile.model.TileMap;
 
+import com.lbi.tile.util.IOUtils;
 import com.lbi.tile.util.ImageUtil;
 import com.lbi.tile.util.Tile;
 import org.apache.http.HttpEntity;
@@ -31,7 +32,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 
 @Service("xyzService")
@@ -139,7 +139,7 @@ public class XYZService {
                 OSSObject ossObject = ossClient.getObject(bucketName, sb.toString());
                 InputStream in = ossObject.getObjectContent();
                 if(tileMap.getExtension().equalsIgnoreCase("tif")){
-                    body=IOUtils.readFully(in);
+                    body= IOUtils.readFully(in);
                 }else{
                     BufferedImage image=ImageIO.read(in);
                     if(image!=null)body=ImageUtil.toByteArray(image);

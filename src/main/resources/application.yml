@@ -1,5 +1,9 @@
 server:
   port: 8080
 spring:
+  application:
+    name: lbi-tile
   profiles:
-    active: prod
+    active: dev
+log:
+  home: logs
