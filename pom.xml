@@ -81,7 +81,7 @@
             <artifactId>fastjson</artifactId>
             <version>1.2.47</version>
         </dependency>
-
+        <!-- geotools start -->
         <dependency>
             <groupId>org.geotools</groupId>
             <artifactId>gt-geojson</artifactId>
@@ -97,7 +97,7 @@
             <artifactId>gt-geotiff</artifactId>
             <version>${geotools.version}</version>
         </dependency>
-
+        <!-- geotools end -->
     </dependencies>
 
     <build>
