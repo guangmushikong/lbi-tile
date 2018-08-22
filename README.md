@@ -22,4 +22,4 @@ OSS瓦片数据存放(OSS bucket)：cateye-tile
 
 ```
 nohup java -jar lbi-tile-1.0-SNAPSHOT.jar --spring.profiles.active=prod &
-``
+```
