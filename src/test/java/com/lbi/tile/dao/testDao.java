@@ -3,29 +3,22 @@ package com.lbi.tile.dao;
 import com.alibaba.fastjson.JSONObject;
 
 
-import com.lbi.tile.util.Tile;
-import com.lbi.tile.util.TileSystem;
+import com.lbi.model.Tile;
+import com.lbi.util.TileSystem;
 import com.vividsolutions.jts.geom.*;
 import com.vividsolutions.jts.io.WKTReader;
 import org.apache.commons.dbcp.BasicDataSource;
-import org.apache.commons.lang3.StringUtils;
-import org.geotools.geojson.feature.FeatureJSON;
 import org.geotools.geojson.geom.GeometryJSON;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.annotation.Resource;
 import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Types;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

@@ -23,10 +23,25 @@
 
 
     <dependencies>
+        <dependency>
+            <groupId>com.lbi</groupId>
+            <artifactId>lbi-util</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
         <!-- SpringBoot start -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-tomcat</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-undertow</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -37,11 +52,6 @@
                     <artifactId>tomcat-jdbc</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-devtools</artifactId>
-            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -60,26 +70,11 @@
             <artifactId>commons-dbcp</artifactId>
             <version>1.4</version>
         </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.14.8</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <version>3.4</version>
-        </dependency>
 
         <dependency>
             <groupId>com.aliyun.oss</groupId>
             <artifactId>aliyun-sdk-oss</artifactId>
             <version>2.8.2</version>
-        </dependency>
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>fastjson</artifactId>
-            <version>1.2.47</version>
         </dependency>
         <!-- geotools start -->
         <dependency>
@@ -100,6 +95,39 @@
         <!-- geotools end -->
     </dependencies>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>Finchley.RELEASE</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <repositories>
+        <repository>
+            <id>repo.spring.io-milestones</id>
+            <name>repo.spring.io-milestones</name>
+            <url>https://repo.spring.io/libs-milestone-local</url>
+        </repository>
+        <repository>
+            <id>repo.spring.io-snapshots</id>
+            <name>repo.spring.io-snapshots</name>
+            <url>https://repo.spring.io/libs-snapshot-local</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>osgeo</id>
+            <name>Open Source Geospatial Foundation Repository</name>
+            <url>http://download.osgeo.org/webdav/geotools/</url>
+        </repository>
+    </repositories>
+
     <build>
         <plugins>
             <plugin>
@@ -112,11 +140,4 @@
         </plugins>
     </build>
 
-    <repositories>
-        <repository>
-            <id>osgeo</id>
-            <name>Open Source Geospatial Foundation Repository</name>
-            <url>http://download.osgeo.org/webdav/geotools/</url>
-        </repository>
-    </repositories>
 </project>

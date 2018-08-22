@@ -14,7 +14,7 @@ import java.util.Enumeration;
 
 import static org.apache.commons.lang3.StringUtils.isNoneEmpty;
 @Order(2)
-@WebFilter(filterName = "sessionFilter", urlPatterns = "/*")
+@WebFilter(filterName = "sessionFilter")
 @Slf4j
 public class SessionFilter implements Filter {
     @Resource(name="logDao")

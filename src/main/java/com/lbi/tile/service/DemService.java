@@ -105,7 +105,6 @@ public class DemService {
             }
         }else {
             ContourPoint point=pixelList.get(0);
-            //System.out.println(JSONObject.toJSONString(point));
             double height=demDao.getHeightByPixel_jingzhuang(point.getX(),point.getY());
             point.setHeight((int)height);
             list.add(point);

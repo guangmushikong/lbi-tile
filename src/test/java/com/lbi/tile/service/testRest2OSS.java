@@ -2,9 +2,9 @@ package com.lbi.tile.service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.lbi.tile.util.Tile;
-import com.lbi.tile.util.TileSystem;
-
+import com.lbi.model.Tile;
+import com.lbi.util.TileSystem;
+import com.lbi.util.IOUtils;
 import com.vividsolutions.jts.geom.Coordinate;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpEntity;
@@ -51,8 +51,8 @@ public class testRest2OSS {
         System.out.println("tile2:"+maxTile.toString());
         long n=0;
 
-        for(int x=minTile.getX();x<=maxTile.getX();x++) {
-            for (int y = minTile.getY(); y <= maxTile.getY(); y++) {
+        for(long x=minTile.getX();x<=maxTile.getX();x++) {
+            for (long y = minTile.getY(); y <= maxTile.getY(); y++) {
                 n++;
                 final Tile tile = new Tile(x, y, zoom);
                 final String tileUrl=getTileUrl(tile);
@@ -95,8 +95,8 @@ public class testRest2OSS {
         System.out.println("tile1:"+minTile.toString());
         System.out.println("tile2:"+maxTile.toString());
         long n=0,m=0;
-        for(int x=minTile.getX();x<=maxTile.getX();x++){
-            for(int y=minTile.getY();y<=maxTile.getY();y++){
+        for(long x=minTile.getX();x<=maxTile.getX();x++){
+            for(long y=minTile.getY();y<=maxTile.getY();y++){
                 n++;
                 Tile tile=new Tile(x,y,zoom);
                 String tileUrl=getTileUrl(tile);
@@ -132,7 +132,7 @@ public class testRest2OSS {
             CloseableHttpResponse res = httpClient.execute(httpGet);
             if (res.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
                 HttpEntity entity = res.getEntity();
-                result= com.lbi.tile.util.IOUtils.readStreamAsString(entity.getContent());
+                result= IOUtils.readStreamAsString(entity.getContent());
             }
             httpClient.close();
         }catch (IOException e){

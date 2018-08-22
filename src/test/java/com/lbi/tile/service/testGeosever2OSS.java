@@ -1,7 +1,7 @@
 package com.lbi.tile.service;
 
-import com.lbi.tile.util.Tile;
-import com.lbi.tile.util.TileSystem;
+import com.lbi.model.Tile;
+import com.lbi.util.TileSystem;
 import com.vividsolutions.jts.geom.Coordinate;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
@@ -9,7 +9,6 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
 import org.junit.Test;
 
 
@@ -48,11 +47,11 @@ public class testGeosever2OSS {
         System.out.println("tile1:"+minTile.toString());
         System.out.println("tile2:"+maxTile.toString());
         long n=0;
-        for(int x=minTile.getX();x<=maxTile.getX();x++){
-            for(int y=minTile.getY();y<=maxTile.getY();y++){
+        for(long x=minTile.getX();x<=maxTile.getX();x++){
+            for(long y=minTile.getY();y<=maxTile.getY();y++){
                 Tile tile=new Tile(x,y,zoom);
                 n++;
-                int alterY=new Double(Math.pow(2,tile.getZ())).intValue()-1-tile.getY();
+                long alterY=new Double(Math.pow(2,tile.getZ())).intValue()-1-tile.getY();
                 tile.setY(alterY);
                 isExistTile("china_city_polygon",tile);
                 String url=getTilePath("lbi:s_ods_city_simplify",tile);
@@ -78,11 +77,11 @@ public class testGeosever2OSS {
         System.out.println("tile1:"+minTile.toString());
         System.out.println("tile2:"+maxTile.toString());
         long n=0;
-        for(int x=minTile.getX();x<=maxTile.getX();x++){
-            for(int y=minTile.getY();y<=maxTile.getY();y++){
+        for(long x=minTile.getX();x<=maxTile.getX();x++){
+            for(long y=minTile.getY();y<=maxTile.getY();y++){
                 Tile tile=new Tile(x,y,zoom);
                 n++;
-                int alterY=new Double(Math.pow(2,tile.getZ())).intValue()-1-tile.getY();
+                long alterY=new Double(Math.pow(2,tile.getZ())).intValue()-1-tile.getY();
                 tile.setY(alterY);
                 isExistTile("gujiao_contour50_line",tile);
                 System.out.println("tile:"+tile.toString());

@@ -12,10 +12,6 @@ spring:
     t_tilemap: t_tilemap
     t_tileset: t_tileset
     t_log: t_log
-  datasource2:
-    url: jdbc:postgresql://localhost:5433/postgres
-    username: postgres
-    password: postgres
 ################### Service Configuration ##########################
 service:
   mapserver: 39.107.104.63:8080
@@ -26,6 +22,7 @@ oss:
   accessKeyId: LTAIelgAxlE5sJMB
   accessKeySecret: RE0tSBGvQjD7EkCNILYfSqC7JGArn3
   endpoint: oss-cn-beijing.aliyuncs.com
+  bucket: cateye-tile
 ################### DEM Data ##########################
 dem:
   gujiao: e:/data/gujiao.tif

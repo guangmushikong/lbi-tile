@@ -1,14 +1,12 @@
 package com.lbi.tile.dao;
 
-
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.lbi.tile.model.Admin_Region;
-
 import com.lbi.tile.model.FeatureVO;
 import com.lbi.tile.model.GeometryVO;
-import com.lbi.tile.util.Tile;
-import com.lbi.tile.util.TileSystem;
+import com.lbi.model.Tile;
+import com.lbi.util.TileSystem;
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
@@ -16,28 +14,18 @@ import com.vividsolutions.jts.geom.PrecisionModel;
 import org.apache.commons.lang3.StringUtils;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
-import javax.annotation.Resource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Repository(value="tileDao")
-public class TileDao {
-    @Resource(name="jdbcTemplate")
-    private JdbcTemplate jdbcTemplate;
-    /*@Resource(name="jdbcTemplate2")
-    private JdbcTemplate jdbcTemplate2;*/
-
+public class TileDao extends CommonDao{
     @Value("${spring.table.china_city_polygon}")
     String china_city_polygon;
-
     final GeometryFactory GEO_FACTORY=new GeometryFactory(new PrecisionModel(PrecisionModel.FLOATING),4326);
 
     public List<Admin_Region> getCityRegionList(Tile tile){

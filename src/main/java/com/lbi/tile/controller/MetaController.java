@@ -1,6 +1,6 @@
 package com.lbi.tile.controller;
 
-import com.lbi.tile.model.ResultBody;
+import com.lbi.model.ResultBody;
 import com.lbi.tile.model.TileMap;
 import com.lbi.tile.model.TileSet;
 import com.lbi.tile.model.xml.Root_Services;

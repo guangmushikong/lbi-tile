@@ -6,12 +6,9 @@
  **************************************/
 package com.lbi.tile.controller;
 
-import com.alibaba.fastjson.JSONObject;
 import com.lbi.tile.model.ContourPoint;
-import com.lbi.tile.model.ResultBody;
+import com.lbi.model.ResultBody;
 import com.lbi.tile.service.DemService;
-import com.vividsolutions.jts.geom.Coordinate;
-import org.apache.commons.collections.ArrayStack;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;

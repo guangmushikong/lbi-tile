@@ -1,13 +1,12 @@
 package com.lbi.tile.controller;
 
 import com.alibaba.fastjson.JSONArray;
-
 import com.alibaba.fastjson.JSONObject;
+import com.lbi.model.Tile;
 import com.lbi.tile.service.XYZService;
 
 
-import com.lbi.tile.util.ImageUtil;
-import com.lbi.tile.util.Tile;
+import com.lbi.util.ImageUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -110,7 +109,6 @@ public class XYZController {
             @PathVariable("y") int y,
             @PathVariable("z") int z){
         Tile tile=new Tile(x,y,z);
-        //JSONObject body=xyzService.getGujiaoContourByTile2(tile);
         JSONObject body=xyzService.getJingZhuangContourByTile(tile);
         if(body!=null)return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(body);
         return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);

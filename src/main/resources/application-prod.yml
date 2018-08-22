@@ -3,7 +3,7 @@ spring:
   datasource:
     platform: postgres
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://rm-2ze378rwv37etj956bo.pg.rds.aliyuncs.com:3432/postgres
+    url: jdbc:postgresql://rm-2ze378rwv37etj956.pg.rds.aliyuncs.com:3433/postgres
     username: postgres
     password: Cateye@2018
   table:
@@ -22,6 +22,7 @@ oss:
   accessKeyId: LTAIelgAxlE5sJMB
   accessKeySecret: RE0tSBGvQjD7EkCNILYfSqC7JGArn3
   endpoint: oss-cn-beijing-internal.aliyuncs.com
+  bucket: cateye-tile
 ################### DEM Data ##########################
 dem:
   gujiao: /opt/tiledata/gujiao.tif

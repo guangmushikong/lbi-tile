@@ -2,7 +2,7 @@ package com.lbi.tile.service;
 
 import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.model.OSSObject;
-import com.lbi.tile.util.IOUtils;
+import com.lbi.util.IOUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

@@ -19,3 +19,7 @@ OSS瓦片数据存放(OSS bucket)：cateye-tile
 地图服务引擎lbi-tile；部署路径：/opt/springboot,端口8080   
 地图渲染引擎Geoserver；部署路径：/opt/tomcat2,端口8888   
 地图服务日志备份路径(OSS bucket)：cateye-log
+
+```
+nohup java -jar lbi-tile-1.0-SNAPSHOT.jar --spring.profiles.active=prod &
+``

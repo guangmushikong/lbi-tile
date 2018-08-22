@@ -5,15 +5,15 @@ import com.alibaba.fastjson.JSONObject;
 import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.model.OSSObject;
 
-import com.lbi.tile.config.MyProps;
+import com.lbi.tile.config.MyConfig;
 import com.lbi.tile.dao.TileDao;
 import com.lbi.tile.model.Admin_Region;
 import com.lbi.tile.model.FeatureVO;
+import com.lbi.model.Tile;
 import com.lbi.tile.model.TileMap;
 
-import com.lbi.tile.util.IOUtils;
-import com.lbi.tile.util.ImageUtil;
-import com.lbi.tile.util.Tile;
+import com.lbi.util.IOUtils;
+import com.lbi.util.ImageUtil;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -22,6 +22,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -40,10 +41,15 @@ public class XYZService {
     TileDao tileDao;
     @Resource(name="ossClient")
     OSSClient ossClient;
-    @Resource(name="myProps")
-    MyProps myProps;
+    @Resource(name="myConfig")
+    MyConfig myConfig;
 
-    private final String bucketName="cateye-tile";
+    @Value("${service.geoserver}")
+    String geoserver;
+    @Value("${service.tiledata}")
+    String tiledata;
+    @Value("${oss.bucket}")
+    String bucketName;
 
     public byte[] getXYZ_Tile(
             String version,
@@ -52,7 +58,7 @@ public class XYZService {
             String extension,
             Tile tile){
         String tileset=layerName+"@"+srs+"@"+extension;
-        TileMap tileMap=myProps.getXYZMap(tileset);
+        TileMap tileMap=myConfig.getXYZMap(tileset);
         if(tileMap==null)return null;
 
         if(tileMap.getKind()==1){
@@ -70,7 +76,7 @@ public class XYZService {
 
     private byte[] getRemoteTile(TileMap tileMap, Tile tile){
         String remoteUrl=tileMap.getSource();
-        remoteUrl=remoteUrl.replace("${geoserver}",myProps.getGeoServer());
+        remoteUrl=remoteUrl.replace("${geoserver}",geoserver);
         StringBuilder sb=new StringBuilder();
         sb.append(remoteUrl);
         sb.append("/"+tile.getZ());
@@ -83,7 +89,7 @@ public class XYZService {
     private byte[] getCacheTile(TileMap tileMap, Tile tile){
         try{
             StringBuilder sb=new StringBuilder();
-            sb.append(myProps.getTiledata());
+            sb.append(tiledata);
             sb.append(File.separator).append(tileMap.getTitle());
             sb.append(File.separator).append(tile.getZ());
             sb.append(File.separator).append(tile.getX());

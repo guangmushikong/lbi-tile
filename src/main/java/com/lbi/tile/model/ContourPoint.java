@@ -6,6 +6,7 @@
  **************************************/
 package com.lbi.tile.model;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
@@ -36,11 +37,13 @@ public class ContourPoint {
      * 像素X坐标
      */
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @JSONField(serialize=false)
     int x;
     /**
      * 像素Y坐标
      */
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @JSONField(serialize=false)
     int y;
     /**
      * 点类型。1为原始点，2为插值点

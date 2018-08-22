@@ -15,10 +15,7 @@ import java.sql.Types;
 import java.util.List;
 
 @Repository(value="metaDao")
-public class MetaDao {
-    @Resource(name="jdbcTemplate")
-    private JdbcTemplate jdbcTemplate;
-
+public class MetaDao extends CommonDao{
     //PG Table
     @Value("${spring.table.t_tilemapservice}")
     String t_tilemapservice;

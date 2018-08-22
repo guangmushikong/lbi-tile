@@ -1,13 +1,14 @@
 package com.lbi.tile.service;
 
-import com.lbi.tile.config.MyProps;
 import com.lbi.tile.dao.MetaDao;
 import com.lbi.tile.model.TileMap;
 import com.lbi.tile.model.TileMapService;
 import com.lbi.tile.model.TileSet;
 import com.lbi.tile.model.xml.*;
-import org.apache.commons.lang3.StringUtils;
+
 import static org.apache.commons.lang3.StringUtils.isNoneEmpty;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -18,8 +19,8 @@ import java.util.List;
 public class MetaService {
     @Resource(name="metaDao")
     private MetaDao metaDao;
-    @Resource(name="myProps")
-    private MyProps myProps;
+    @Value("${service.mapserver}")
+    String mapserver;
 
     public Root_Services getServices(){
         Root_Services u=new Root_Services();
@@ -27,7 +28,7 @@ public class MetaService {
         List<Node_TileMapService> nServiceList=new ArrayList<>();
         for(TileMapService s:serviceList){
             String href=s.getHref();
-            href=href.replace("${mapserver}",myProps.getMapServer());
+            href=href.replace("${mapserver}",mapserver);
             Node_TileMapService nService=new Node_TileMapService(s.getTitle(),s.getVersion(),href);
             nServiceList.add(nService);
         }
@@ -42,13 +43,13 @@ public class MetaService {
         u.setTitle(nService.getTitle());
         if(isNoneEmpty(nService.getAbstract()))u.setAbstract(nService.getAbstract());
         //parent href
-        u.setServices("http://"+myProps.getMapServer());
+        u.setServices("http://"+mapserver);
         //child list
         List<TileMap> tileMapList=metaDao.getTileMapList(serviceId);
         List<Node_TileMap> nTileMapList=new ArrayList<>();
         for(TileMap m:tileMapList){
             String href=m.getHref();
-            href=href.replace("${mapserver}",myProps.getMapServer());
+            href=href.replace("${mapserver}",mapserver);
             Node_TileMap nTileMap=new Node_TileMap(m.getTitle(),m.getSrs(),m.getProfile(),href);
             nTileMap.setGroup(m.getGroup());
             nTileMapList.add(nTileMap);
@@ -69,7 +70,7 @@ public class MetaService {
             //parent href
             TileMapService nService=metaDao.getTileMapServiceById(u.getServiceId());
             String tilemapservice=nService.getHref();
-            tilemapservice=tilemapservice.replace("${mapserver}",myProps.getMapServer());
+            tilemapservice=tilemapservice.replace("${mapserver}",mapserver);
             item.setServices(tilemapservice);
             if(isNoneEmpty(u.getAbstract()))item.setAbstract(u.getAbstract());
             item.setTitle(u.getTitle());
@@ -100,7 +101,7 @@ public class MetaService {
             List<TileSet> tileSetList=metaDao.getTileSetList(u.getId());
             for(TileSet t:tileSetList){
                 String href=t.getHref();
-                href=href.replace("${mapserver}",myProps.getMapServer());
+                href=href.replace("${mapserver}",mapserver);
                 Node_TileSet nTileSet=new Node_TileSet(href,t.getUnitsPerPixel(),t.getSortOrder());
                 nTileSetList.add(nTileSet);
             }
@@ -121,7 +122,7 @@ public class MetaService {
         if(list!=null)mapList.addAll(list);
         for(TileMap m:mapList){
             String href=m.getHref();
-            href=href.replace("${mapserver}",myProps.getMapServer());
+            href=href.replace("${mapserver}",mapserver);
             m.setHref(href);
         }
         return mapList;
@@ -130,7 +131,7 @@ public class MetaService {
     public TileMap getTileMapById(long mapId){
         TileMap m=metaDao.getTileMapById(mapId);
         String href=m.getHref();
-        href=href.replace("${mapserver}",myProps.getMapServer());
+        href=href.replace("${mapserver}",mapserver);
         m.setHref(href);
         return m;
     }
@@ -138,7 +139,7 @@ public class MetaService {
         List<TileSet> mapSetList=metaDao.getTileSetList(mapId);
         for(TileSet t:mapSetList){
             String href=t.getHref();
-            href=href.replace("${mapserver}",myProps.getMapServer());
+            href=href.replace("${mapserver}",mapserver);
             t.setHref(href);
         }
         return mapSetList;
