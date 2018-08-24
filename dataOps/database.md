@@ -1,0 +1,76 @@
+# 数据库设计
+
+<table>
+<thead>
+<tr>
+	<th>ID</th>
+	<th>表名</th>
+	<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+	<td>1</td>
+    <td>t_project</td>
+	<td>项目表</td>
+</tr>
+<tr>
+	<td>2</td>
+    <td>t_user</td>
+	<td>项目用户表</td>
+</tr>
+<tr>
+	<td>3</td>
+    <td>t_dataset</td>
+	<td>项目数据集表</td>
+</tr>
+<tr>
+	<td>4</td>
+    <td>t_task</td>
+	<td>项目任务表</td>
+</tr>
+
+<tr>
+	<td>5</td>
+    <td>t_tilemapservice</td>
+	<td>瓦片地图服务</td>
+</tr>
+<tr>
+	<td>6</td>
+    <td>t_tilemap</td>
+	<td>瓦片地图</td>
+</tr>
+<tr>
+	<td>7</td>
+    <td>t_tileset</td>
+	<td>瓦片数据集</td>
+</tr>
+<tr>
+	<td>8</td>
+    <td>t_log</td>
+	<td>日志表</td>
+</tr>
+<tr>
+	<td>9</td>
+    <td>t_sys_user</td>
+	<td>系统用户</td>
+</tr>
+<tr>
+	<td>10</td>
+    <td>t_sys_role</td>
+	<td>用户权限</td>
+</tr>
+<tr>
+	<td>11</td>
+    <td>s_ods_city_simplify</td>
+	<td>城市面</td>
+</tr>
+<tr>
+	<td>12</td>
+    <td>d_layergroup</td>
+	<td>图层组字典</td>
+</tr>
+</tbody>
+</table>
+
+[表结构](tablespec.md)

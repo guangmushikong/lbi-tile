@@ -1,9 +1,3 @@
-/**************************************
- * Copyright (C), Navinfo
- * Package: com.lbi.tile.model
- * Author: liumingkai05559
- * Date: Created in 2018/5/14 22:02
- **************************************/
 package com.lbi.tile.model;
 
 import com.alibaba.fastjson.JSONArray;
@@ -14,7 +8,6 @@ import lombok.Setter;
 /*************************************
  * Class Name: GeometryVO
  * Description:〈几何对象〉
- * @author liumingkai
  * @create 2018/5/14
  * @since 1.0.0
  ************************************/

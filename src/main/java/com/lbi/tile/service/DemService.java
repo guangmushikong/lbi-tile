@@ -1,9 +1,3 @@
-/**************************************
- * Copyright (C), Navinfo
- * Package: com.lbi.tile.service
- * Author: liumingkai05559
- * Date: Created in 2018/5/7 10:55
- **************************************/
 package com.lbi.tile.service;
 
 import com.lbi.tile.dao.DemDao;
@@ -18,7 +12,6 @@ import java.util.List;
 /*************************************
  * Class Name: DemService
  * Description:〈Dem服务〉
- * @author liumingkai
  * @create 2018/5/7
  * @since 1.0.0
  ************************************/

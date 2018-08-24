@@ -1,0 +1,51 @@
+# 数据表
+
+### 1、t_project
+<table>
+<thead>
+<tr>
+	<th>ID</th>
+	<th>字段</th>
+	<th>说明</th>
+	<th>类型</th>
+	<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+	<td>1</td>
+    <td>id</td>
+	<td>主键</td>
+	<td>long</td>
+	<td></td>
+</tr>
+<tr>
+	<td>2</td>
+    <td>name</td>
+	<td>项目名称</td>
+	<td>string</td>
+	<td></td>
+</tr>
+<tr>
+	<td>3</td>
+    <td>memo</td>
+	<td>备注</td>
+	<td>string</td>
+	<td></td>
+</tr>
+<tr>
+	<td>4</td>
+    <td>create_time</td>
+	<td>创建时间</td>
+	<td>date</td>
+	<td></td>
+</tr>
+<tr>
+	<td>5</td>
+    <td>modify_time</td>
+	<td>修改时间</td>
+	<td>date</td>
+	<td></td>
+</tr>
+</tbody>
+</table>

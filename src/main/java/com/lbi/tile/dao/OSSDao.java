@@ -1,9 +1,3 @@
-/**************************************
- * Copyright (C), Navinfo
- * Package: com.lbi.tile.dao
- * Author: liumingkai05559
- * Date: Created in 2018/8/22 16:48
- **************************************/
 package com.lbi.tile.dao;
 
 import com.aliyun.oss.OSSClient;
@@ -22,13 +16,7 @@ import javax.annotation.Resource;
 import java.net.URL;
 import java.util.Date;
 
-/*************************************
- * Class Name: OSSDao
- * Description:〈OSS Dao〉
- * @author liumingkai
- * @create 2018/8/22
- * @since 1.0.0
- ************************************/
+
 @Repository(value="ossDao")
 public class OSSDao {
     @Resource(name="ossClient")

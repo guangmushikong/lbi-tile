@@ -1,9 +1,3 @@
-/**************************************
- * Copyright (C), Navinfo
- * Package: com.lbi.tile.dao
- * Author: liumingkai05559
- * Date: Created in 2018/5/7 10:48
- **************************************/
 package com.lbi.tile.dao;
 
 import com.lbi.tile.model.ContourPoint;

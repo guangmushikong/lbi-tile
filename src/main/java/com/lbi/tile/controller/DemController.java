@@ -1,9 +1,3 @@
-/**************************************
- * Copyright (C), Navinfo
- * Package: com.lbi.tile.controller
- * Author: liumingkai05559
- * Date: Created in 2018/5/7 10:58
- **************************************/
 package com.lbi.tile.controller;
 
 import com.lbi.tile.model.ContourPoint;
@@ -16,15 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-/*************************************
- * Class Name: DemController
- * Description:〈Dem控制器〉
- * @author liumingkai
- * @create 2018/5/7
- * @since 1.0.0
- ************************************/
 @CrossOrigin
 @RestController
 @RequestMapping("/dem")

@@ -1,9 +1,3 @@
-/**************************************
- * Copyright (C), Navinfo
- * Package: com.lbi.tile.model
- * Author: liumingkai05559
- * Date: Created in 2018/6/19 10:40
- **************************************/
 package com.lbi.tile.model;
 
 import com.alibaba.fastjson.annotation.JSONField;
@@ -14,7 +8,6 @@ import lombok.Setter;
 /*************************************
  * Class Name: ContourPoint
  * Description:〈等高线点〉
- * @author liumingkai
  * @create 2018/6/19
  * @since 1.0.0
  ************************************/
