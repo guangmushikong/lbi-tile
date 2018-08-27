@@ -25,7 +25,7 @@ public class WebConfig implements WebMvcConfigurer {
 				iterator.remove();
 			}
 		}
-		//WebMvcConfigurer.super.configureMessageConverters(converters);
+
 		//创建fastjson转换器实例
 		FastJsonHttpMessageConverter converter = new FastJsonHttpMessageConverter();
 		//配置对象
