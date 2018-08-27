@@ -14,8 +14,8 @@ spring:
     t_log: t_log
 ################### Service Configuration ##########################
 service:
-  mapserver: 39.107.104.63:8080
-  geoserver: 39.107.104.63:8888
+  mapserver: localhost:8080
+  geoserver: localhost:8888
   tiledata: F:/BaiduNetdiskDownload
 ################### OSS Configuration ##########################
 oss:

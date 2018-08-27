@@ -13,6 +13,8 @@ import javax.annotation.Resource;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.net.URL;
+import java.util.Date;
 
 @Service("tmsService")
 public class TMSService {
@@ -41,6 +43,8 @@ public class TMSService {
         }else if(tileMap.getKind()==2){
             //return getCacheTile(tileMap,tile);
             return getOSSTile(tileMap,tile);
+        }else if(tileMap.getKind()==3){
+            return getOSSTimeTile(tileMap,tile);
         }
 
         return null;
@@ -93,6 +97,19 @@ public class TMSService {
     private byte[] getOSSTile(TileMap tileMap, Tile tile)throws Exception{
         StringBuilder sb=new StringBuilder();
         sb.append(tileMap.getTitle());
+        sb.append("/").append(tile.getZ());
+        sb.append("/").append(tile.getX());
+        sb.append("/").append(tile.getY());
+        sb.append(".").append(tileMap.getFileExtension());
+        return ossDao.getOSSObjectByURL(sb.toString());
+    }
+
+    private byte[] getOSSTimeTile(TileMap tileMap, Tile tile)throws Exception{
+        StringBuilder sb=new StringBuilder();
+        String title=tileMap.getTitle();
+        title=title.replace("_"+tileMap.getRecordDate(),"");
+        sb.append(title);
+        sb.append("/").append(tileMap.getRecordDate());
         sb.append("/").append(tile.getZ());
         sb.append("/").append(tile.getX());
         sb.append("/").append(tile.getY());

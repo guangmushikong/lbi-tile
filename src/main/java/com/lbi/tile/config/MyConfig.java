@@ -69,6 +69,7 @@ public class MyConfig {
                             u.setId(rs.getLong("id"));
                             u.setServiceId(rs.getLong("service_id"));
                             u.setTitle(rs.getString("title"));
+                            u.setRecordDate(rs.getString("record_date"));
                             u.setAbstract(rs.getString("abstract"));
                             u.setSrs(rs.getString("srs"));
                             u.setProfile(rs.getString("profile"));
@@ -87,6 +88,7 @@ public class MyConfig {
                             u.setExtension(rs.getString("extension"));
 
                             u.setKind(rs.getInt("kind"));
+                            u.setGroup(rs.getString("layer_group"));
                             u.setSource(rs.getString("source"));
                             u.setFileExtension(rs.getString("file_extension"));
                             return u;

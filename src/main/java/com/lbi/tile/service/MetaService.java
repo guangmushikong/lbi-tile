@@ -1,9 +1,7 @@
 package com.lbi.tile.service;
 
 import com.lbi.tile.dao.MetaDao;
-import com.lbi.tile.model.TileMap;
-import com.lbi.tile.model.TileMapService;
-import com.lbi.tile.model.TileSet;
+import com.lbi.tile.model.*;
 import com.lbi.tile.model.xml.*;
 
 import static org.apache.commons.lang3.StringUtils.isNoneEmpty;
@@ -12,8 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Service("metaService")
 public class MetaService {
@@ -128,8 +125,8 @@ public class MetaService {
         return mapList;
     }
 
-    public TileMap getTileMapById(long mapId){
-        TileMap m=metaDao.getTileMapById(mapId);
+    public TileMap getTileMapById(long id){
+        TileMap m=metaDao.getTileMapById(id);
         String href=m.getHref();
         href=href.replace("${mapserver}",mapserver);
         m.setHref(href);
@@ -143,5 +140,47 @@ public class MetaService {
             t.setHref(href);
         }
         return mapSetList;
+    }
+
+    public List<ProjectDO> getProjectList(){
+        return metaDao.getProjectList();
+    }
+
+    public ProjectDO getProjectById(long id){
+        return metaDao.getProjectById(id);
+    }
+
+    public List<DataSetDO> getDataSetList(long projectId){
+        List<DataSetDO> list= metaDao.getDataSetList(projectId);
+        //分组
+        Map<String,List<DataSetDO>> groupDict=new HashMap<>();
+        for(DataSetDO dataSet:list){
+            List<DataSetDO> dataSetList;
+            if(groupDict.containsKey(dataSet.getName())){
+                dataSetList=groupDict.get(dataSet.getName());
+            }else {
+                dataSetList=new ArrayList<>();
+            }
+            dataSetList.add(dataSet);
+            groupDict.put(dataSet.getName(),dataSetList);
+        }
+
+        List<DataSetDO> result=new ArrayList<>();
+        for(String name:groupDict.keySet()){
+            List<DataSetDO> dataSetList=groupDict.get(name);
+            List<Long> idList=new ArrayList<>();
+            for(DataSetDO dataSet:dataSetList){
+                idList.add(dataSet.getMapId());
+            }
+            DataSetDO dataSetDO=dataSetList.get(0);
+            List<TileMap> mapList=metaDao.getTileMapList(idList);
+            dataSetDO.setMaps(mapList);
+            result.add(dataSetDO);
+        }
+        return result;
+    }
+
+    public DataSetDO getDataSetById(long id){
+        return metaDao.getDataSetById(id);
     }
 }

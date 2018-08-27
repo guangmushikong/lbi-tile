@@ -1,5 +1,6 @@
 package com.lbi.tile.model;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -7,8 +8,16 @@ import lombok.Setter;
 @Setter
 public class TileMap {
     long id;
+
     long serviceId;
+    /**
+     * 标题
+     */
     String title;
+    /**
+     * 数据记录日期，用于影像时间序列
+     */
+    String recordDate;
     String _abstract;
     String srs;
     String profile;
@@ -28,9 +37,14 @@ public class TileMap {
     String mimeType;
     String extension;
 
+    @JSONField(serialize=false)
     int kind;
+
     String group;//图层组
+
+    @JSONField(serialize=false)
     String source;
+
     String fileExtension;
 
     public void setAbstract(String val){

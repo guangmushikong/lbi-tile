@@ -29,46 +29,60 @@
     <td>t_task</td>
 	<td>项目任务表</td>
 </tr>
-
 <tr>
 	<td>5</td>
+    <td>r_project_dataset</td>
+	<td>项目-数据集关系表</td>
+</tr>
+<tr>
+	<td>6</td>
+    <td>r_project_user</td>
+	<td>项目-用户关系表</td>
+</tr>
+<tr>
+	<td>7</td>
     <td>t_tilemapservice</td>
 	<td>瓦片地图服务</td>
 </tr>
 <tr>
-	<td>6</td>
+	<td>8</td>
     <td>t_tilemap</td>
 	<td>瓦片地图</td>
 </tr>
 <tr>
-	<td>7</td>
+	<td>9</td>
     <td>t_tileset</td>
 	<td>瓦片数据集</td>
 </tr>
 <tr>
-	<td>8</td>
+	<td>10</td>
     <td>t_log</td>
 	<td>日志表</td>
 </tr>
 <tr>
-	<td>9</td>
+	<td>11</td>
     <td>t_sys_user</td>
 	<td>系统用户</td>
 </tr>
 <tr>
-	<td>10</td>
+	<td>12</td>
     <td>t_sys_role</td>
 	<td>用户权限</td>
 </tr>
 <tr>
-	<td>11</td>
+	<td>13</td>
     <td>s_ods_city_simplify</td>
 	<td>城市面</td>
 </tr>
 <tr>
-	<td>12</td>
-    <td>d_layergroup</td>
+	<td>14</td>
+    <td>d_layer_group</td>
 	<td>图层组字典</td>
+</tr>
+<tr>
+	<td>15</td>
+    <td>d_layer_kind</td>
+	<td>图层种类字典</td>
 </tr>
 </tbody>
 </table>

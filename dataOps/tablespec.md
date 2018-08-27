@@ -49,3 +49,268 @@
 </tr>
 </tbody>
 </table>
+
+### 2、t_dataset
+<table>
+<thead>
+<tr>
+	<th>ID</th>
+	<th>字段</th>
+	<th>说明</th>
+	<th>类型</th>
+	<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+	<td>1</td>
+    <td>id</td>
+	<td>主键</td>
+	<td>long</td>
+	<td></td>
+</tr>
+<tr>
+	<td>2</td>
+    <td>name</td>
+	<td>项目名称</td>
+	<td>string</td>
+	<td></td>
+</tr>
+<tr>
+	<td>3</td>
+    <td>memo</td>
+	<td>备注</td>
+	<td>string</td>
+	<td></td>
+</tr>
+<tr>
+	<td>4</td>
+    <td>record_date</td>
+	<td>数据日期</td>
+	<td>string</td>
+	<td></td>
+</tr>
+<tr>
+	<td>5</td>
+    <td>type</td>
+	<td>图层类型</td>
+	<td>int</td>
+	<td>1栅格、2矢量、3照片</td>
+</tr>
+<tr>
+	<td>6</td>
+    <td>layer_group</td>
+	<td>图层组</td>
+	<td>string</td>
+	<td>L0基础栅格图层，L1项目栅格图层，L2基础矢量图层，L3项目矢量图层，L4绘制图层</td>
+</tr>
+<tr>
+	<td>7</td>
+    <td>kind</td>
+	<td>图层种类</td>
+	<td>int</td>
+	<td>1为普通图层，2为时序图层</td>
+</tr>
+<tr>
+	<td>8</td>
+    <td>map_id</td>
+	<td>瓦片地图ID</td>
+	<td>long</td>
+	<td></td>
+</tr>
+<tr>
+	<td>9</td>
+    <td>create_time</td>
+	<td>创建时间</td>
+	<td>date</td>
+	<td></td>
+</tr>
+<tr>
+	<td>10</td>
+    <td>modify_time</td>
+	<td>修改时间</td>
+	<td>date</td>
+	<td></td>
+</tr>
+</tbody>
+</table>
+
+### 3、t_user
+<table>
+<thead>
+<tr>
+	<th>ID</th>
+	<th>字段</th>
+	<th>说明</th>
+	<th>类型</th>
+	<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+	<td>1</td>
+    <td>id</td>
+	<td>主键</td>
+	<td>long</td>
+	<td></td>
+</tr>
+<tr>
+	<td>2</td>
+    <td>name</td>
+	<td>项目名称</td>
+	<td>string</td>
+	<td></td>
+</tr>
+<tr>
+	<td>3</td>
+    <td>level</td>
+	<td>用户级别</td>
+	<td>int</td>
+	<td></td>
+</tr>
+<tr>
+	<td>4</td>
+    <td>create_time</td>
+	<td>创建时间</td>
+	<td>date</td>
+	<td></td>
+</tr>
+<tr>
+	<td>5</td>
+    <td>modify_time</td>
+	<td>修改时间</td>
+	<td>date</td>
+	<td></td>
+</tr>
+</tbody>
+</table>
+
+### 4、t_task
+<table>
+<thead>
+<tr>
+	<th>ID</th>
+	<th>字段</th>
+	<th>说明</th>
+	<th>类型</th>
+	<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+	<td>1</td>
+    <td>id</td>
+	<td>主键</td>
+	<td>long</td>
+	<td></td>
+</tr>
+<tr>
+	<td>2</td>
+    <td>name</td>
+	<td>项目名称</td>
+	<td>string</td>
+	<td></td>
+</tr>
+<tr>
+	<td>3</td>
+    <td>memo</td>
+	<td>备注</td>
+	<td>string</td>
+	<td></td>
+</tr>
+<tr>
+	<td>4</td>
+    <td>project_id</td>
+	<td>项目ID</td>
+	<td>long</td>
+	<td></td>
+</tr>
+<tr>
+	<td>5</td>
+    <td>create_time</td>
+	<td>创建时间</td>
+	<td>date</td>
+	<td></td>
+</tr>
+<tr>
+	<td>6</td>
+    <td>modify_time</td>
+	<td>修改时间</td>
+	<td>date</td>
+	<td></td>
+</tr>
+</tbody>
+</table>
+
+### 5、r_project_dataset
+<table>
+<thead>
+<tr>
+	<th>ID</th>
+	<th>字段</th>
+	<th>说明</th>
+	<th>类型</th>
+	<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+	<td>1</td>
+    <td>id</td>
+	<td>主键</td>
+	<td>long</td>
+	<td></td>
+</tr>
+<tr>
+	<td>2</td>
+    <td>project_id</td>
+	<td>项目ID</td>
+	<td>long</td>
+	<td></td>
+</tr>
+<tr>
+	<td>3</td>
+    <td>dataset_id</td>
+	<td>数据集ID</td>
+	<td>long</td>
+	<td></td>
+</tr>
+</tbody>
+</table>
+
+### 6、r_project_user
+<table>
+<thead>
+<tr>
+	<th>ID</th>
+	<th>字段</th>
+	<th>说明</th>
+	<th>类型</th>
+	<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+	<td>1</td>
+    <td>id</td>
+	<td>主键</td>
+	<td>long</td>
+	<td></td>
+</tr>
+<tr>
+	<td>2</td>
+    <td>project_id</td>
+	<td>项目ID</td>
+	<td>long</td>
+	<td></td>
+</tr>
+<tr>
+	<td>3</td>
+    <td>user_id</td>
+	<td>用户ID</td>
+	<td>long</td>
+	<td></td>
+</tr>
+</tbody>
+</table>
+

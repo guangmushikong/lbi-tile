@@ -66,6 +66,8 @@ public class XYZService {
         }else if(tileMap.getKind()==2){
             //return getCacheTile(tileMap,tile);
             return getOSSTile(tileMap,tile);
+        }else if(tileMap.getKind()==3){
+            return getOSSTimeTile(tileMap,tile);
         }
 
         return null;
@@ -121,6 +123,21 @@ public class XYZService {
     private byte[] getOSSTile(TileMap tileMap, Tile tile){
         StringBuilder sb=new StringBuilder();
         sb.append(tileMap.getTitle());
+        sb.append("/").append(tile.getZ());
+        sb.append("/").append(tile.getX());
+        sb.append("/").append(tile.getY());
+        sb.append(".").append(tileMap.getFileExtension());
+        Date expiration=new Date(new Date().getTime() + 60000);
+        URL url=ossClient.generatePresignedUrl(bucketName,sb.toString(),expiration);
+        return request(url.toString());
+    }
+
+    private byte[] getOSSTimeTile(TileMap tileMap, Tile tile){
+        StringBuilder sb=new StringBuilder();
+        String title=tileMap.getTitle();
+        title=title.replace("_"+tileMap.getRecordDate(),"");
+        sb.append(title);
+        sb.append("/").append(tileMap.getRecordDate());
         sb.append("/").append(tile.getZ());
         sb.append("/").append(tile.getX());
         sb.append("/").append(tile.getY());

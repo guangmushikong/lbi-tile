@@ -1,7 +1,6 @@
 package com.lbi.tile.config;
 
 import com.aliyun.oss.OSSClient;
-import com.aliyun.oss.model.OSSObject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.geotools.coverage.grid.GridCoverage2D;
@@ -14,7 +13,6 @@ import org.springframework.core.annotation.Order;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-import java.io.*;
 @Order(1)
 @Configuration
 @Slf4j
@@ -87,40 +85,4 @@ public class RootConfig {
         log.info("init myConfig");
         return myConfig;
     }
-
-    private boolean syncDEMData(String localPath){
-        boolean result=true;
-        File file=new File(localPath);
-        if(!file.exists()){
-            System.out.println("sync oss data");
-            OSSClient client=new OSSClient(
-                    env.getProperty("oss.endpoint"),
-                    env.getProperty("oss.accessKeyId"),
-                    env.getProperty("oss.accessKeySecret"));
-            String bucket=env.getProperty("dem.oss.bucket");
-            String ossPath=env.getProperty("dem.oss.path");
-            try{
-                boolean found = client.doesObjectExist(bucket, ossPath);
-                if(found){
-                    OSSObject ossObject = client.getObject(bucket, ossPath);
-                    InputStream in = ossObject.getObjectContent();
-                    int index;
-                    byte[] bytes = new byte[1024];
-                    FileOutputStream downloadFile = new FileOutputStream(localPath);
-                    while ((index = in.read(bytes)) != -1) {
-                        downloadFile.write(bytes, 0, index);
-                        downloadFile.flush();
-                    }
-                    downloadFile.close();
-                    in.close();
-                }else result= false;
-            }catch (Exception e){
-                e.printStackTrace();
-                result= false;
-            }
-            client.shutdown();
-        }
-        return result;
-    }
-
 }
