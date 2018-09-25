@@ -21,6 +21,10 @@ public class MetaDao extends CommonDao{
     String t_tilemap;
     @Value("${spring.table.t_tileset}")
     String t_tileset;
+    @Value("${spring.table.t_project}")
+    String t_project;
+    @Value("${spring.table.t_dataset}")
+    String t_dataset;
 
     public List<TileMapService> getTileMapServiceList(){
         List<TileMapService> list=null;
@@ -309,7 +313,7 @@ public class MetaDao extends CommonDao{
         List<ProjectDO> list=null;
         try{
             StringBuilder sb=new StringBuilder();
-            sb.append("select * from t_project");
+            sb.append("select * from "+t_project);
             sb.append(" order by id");
             list=jdbcTemplate.query(
                     sb.toString(),
@@ -332,7 +336,7 @@ public class MetaDao extends CommonDao{
 
     public ProjectDO getProjectById(long id){
         try{
-            String sql="select * from t_project where id=?";
+            String sql="select * from "+t_project+" where id=?";
             List<ProjectDO>  list=jdbcTemplate.query(
                     sql,
                     new Object[]{id},
@@ -359,7 +363,7 @@ public class MetaDao extends CommonDao{
         List<DataSetDO> list=null;
         try{
             StringBuilder sb=new StringBuilder();
-            sb.append("select * from t_dataset");
+            sb.append("select * from "+t_dataset);
             sb.append(" where id in (select dataset_id from r_project_dataset where project_id=?)");
             sb.append(" order by layer_group,record_date");
             list=jdbcTemplate.query(
@@ -390,7 +394,7 @@ public class MetaDao extends CommonDao{
 
     public DataSetDO getDataSetById(long id){
         try{
-            String sql="select * from t_dataset where id=?";
+            String sql="select * from "+t_dataset+" where id=?";
             List<DataSetDO>  list=jdbcTemplate.query(
                     sql,
                     new Object[]{id},

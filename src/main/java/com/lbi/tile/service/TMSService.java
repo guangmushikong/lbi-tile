@@ -41,10 +41,13 @@ public class TMSService {
         if(tileMap.getKind()==1){
             return getRemoteTile(tileMap,tile);
         }else if(tileMap.getKind()==2){
-            //return getCacheTile(tileMap,tile);
             return getOSSTile(tileMap,tile);
         }else if(tileMap.getKind()==3){
             return getOSSTimeTile(tileMap,tile);
+        }else if(tileMap.getKind()==4){
+            return getCacheTile(tileMap,tile);
+        }else if(tileMap.getKind()==5){
+            return getCacheTimeTile(tileMap,tile);
         }
 
         return null;
@@ -66,6 +69,42 @@ public class TMSService {
             StringBuilder sb=new StringBuilder();
             sb.append(tiledata);
             sb.append(File.separator).append(tileMap.getTitle());
+            sb.append(File.separator).append(tile.getZ());
+            sb.append(File.separator).append(tile.getX());
+            sb.append(File.separator).append(tile.getY());
+            sb.append(".").append(tileMap.getFileExtension());
+            File file=new File(sb.toString());
+            if(file.exists()){
+                if(tileMap.getExtension().equalsIgnoreCase("tif")){
+                    FileInputStream fis = new FileInputStream(file);
+                    ByteArrayOutputStream bos = new ByteArrayOutputStream(1000);
+                    byte[] b = new byte[1000];
+                    int n;
+                    while ((n = fis.read(b)) != -1) {
+                        bos.write(b, 0, n);
+                    }
+                    fis.close();
+                    bos.close();
+                    return bos.toByteArray();
+                }else{
+                    BufferedImage image=ImageIO.read(file);
+                    if(image!=null)return ImageUtil.toByteArray(image);
+                }
+            }
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+        return null;
+    }
+
+    private byte[] getCacheTimeTile(TileMap tileMap, Tile tile){
+        try{
+            StringBuilder sb=new StringBuilder();
+            sb.append(tiledata);
+            String title=tileMap.getTitle();
+            title=title.replace("_"+tileMap.getRecordDate(),"");
+            sb.append(File.separator).append(title);
+            sb.append(File.separator).append(tileMap.getRecordDate());
             sb.append(File.separator).append(tile.getZ());
             sb.append(File.separator).append(tile.getX());
             sb.append(File.separator).append(tile.getY());
