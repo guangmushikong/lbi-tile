@@ -41,8 +41,8 @@ public class XYZController {
                 JSONArray body=xyzService.getCityRegionByTile(tile);
                 if(body!=null)return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(body);
             }else{
-                byte[] bytes=xyzService.getXYZ_Tile(version,args[0],args[1],args[2],tile);
-                if(bytes!=null)return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(bytes);
+                String body=xyzService.getCacheJsonTile(version,args[0],args[1],args[2],tile);
+                if(body!=null)return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(body);
             }
         }else if(extension.equalsIgnoreCase("png")){
             byte[] bytes=xyzService.getXYZ_Tile(version,args[0],args[1],args[2],tile);

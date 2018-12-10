@@ -4,6 +4,6 @@ spring:
   application:
     name: lbi-tile
   profiles:
-    active: dev
+    active: prod
 log:
   home: logs

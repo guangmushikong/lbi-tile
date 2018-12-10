@@ -14,6 +14,7 @@ import com.lbi.tile.model.TileMap;
 
 import com.lbi.util.IOUtils;
 import com.lbi.util.ImageUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -100,9 +101,10 @@ public class XYZService {
             sb.append(File.separator).append(tile.getX());
             sb.append(File.separator).append(tile.getY());
             sb.append(".").append(tileMap.getFileExtension());
+            System.out.println(tile.getX()+","+tile.getY()+","+tile.getZ()+"|"+sb.toString());
             File file=new File(sb.toString());
             if(file.exists()){
-                if(tileMap.getExtension().equalsIgnoreCase("tif")){
+                if(tileMap.getExtension().equalsIgnoreCase("tif") || tileMap.getExtension().equalsIgnoreCase("geojson")){
                     FileInputStream fis = new FileInputStream(file);
                     ByteArrayOutputStream bos = new ByteArrayOutputStream(1000);
                     byte[] b = new byte[1000];
@@ -113,7 +115,9 @@ public class XYZService {
                     fis.close();
                     bos.close();
                     return bos.toByteArray();
-                }else{
+                }/*else if(tileMap.getExtension().equalsIgnoreCase("geojson")){
+
+                }*/else{
                     BufferedImage image=ImageIO.read(file);
                     if(image!=null)return ImageUtil.toByteArray(image);
                 }
@@ -122,6 +126,37 @@ public class XYZService {
             ex.printStackTrace();
         }
         return null;
+    }
+
+    public String getCacheJsonTile(
+            String version,
+            String layerName,
+            String srs,
+            String extension,
+            Tile tile){
+        String body=null;
+        try{
+            String tileset=layerName+"@"+srs+"@"+extension;
+            TileMap tileMap=myConfig.getXYZMap(tileset);
+            if(tileMap==null)return null;
+
+            StringBuilder sb=new StringBuilder();
+            sb.append(tiledata);
+            sb.append(File.separator).append(tileMap.getTitle());
+            sb.append(File.separator).append(tile.getZ());
+            sb.append(File.separator).append(tile.getX());
+            sb.append(File.separator).append(tile.getY());
+            sb.append(".").append(tileMap.getFileExtension());
+            //System.out.println(tile.getX()+","+tile.getY()+","+tile.getZ()+"|"+sb.toString());
+            File file=new File(sb.toString());
+            if(file.exists()){
+                FileInputStream fis = new FileInputStream(file);
+                body= IOUtils.readStreamAsString(fis);
+            }
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+        return body;
     }
 
     private byte[] getCacheTimeTile(TileMap tileMap, Tile tile){
