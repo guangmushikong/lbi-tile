@@ -3,7 +3,6 @@ package com.lbi.tile.service;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.aliyun.oss.OSSClient;
-import com.aliyun.oss.model.OSSObject;
 
 import com.lbi.tile.config.MyConfig;
 import com.lbi.tile.dao.TileDao;
@@ -101,7 +100,7 @@ public class XYZService {
             sb.append(File.separator).append(tile.getX());
             sb.append(File.separator).append(tile.getY());
             sb.append(".").append(tileMap.getFileExtension());
-            System.out.println(tile.getX()+","+tile.getY()+","+tile.getZ()+"|"+sb.toString());
+            //System.out.println(tile.getX()+","+tile.getY()+","+tile.getZ()+"|"+sb.toString());
             File file=new File(sb.toString());
             if(file.exists()){
                 if(tileMap.getExtension().equalsIgnoreCase("tif") || tileMap.getExtension().equalsIgnoreCase("geojson")){
@@ -279,6 +278,21 @@ public class XYZService {
         JSONArray body=new JSONArray();
         try{
             List<JSONObject> list=tileDao.getGeojsonListByTile("gujiao_200",tile);
+            if(list!=null){
+                for(JSONObject u:list){
+                    body.add(u);
+                }
+            }
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+        return body;
+    }
+
+    public JSONArray getLPSByTile(String layerName,Tile tile){
+        JSONArray body=new JSONArray();
+        try{
+            List<JSONObject> list=tileDao.getLPSListByTile(layerName,tile);
             if(list!=null){
                 for(JSONObject u:list){
                     body.add(u);

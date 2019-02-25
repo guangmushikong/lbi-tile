@@ -2,7 +2,7 @@ package com.lbi.tile.config;
 
 import com.aliyun.oss.OSSClient;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.dbcp.BasicDataSource;
+
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.gce.geotiff.GeoTiffReader;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,27 +19,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 public class RootConfig {
     @Autowired
     Environment env;
-
-    @Bean(name = "jdbcTemplate")
-    public JdbcTemplate getJdbcTemplate(){
-        JdbcTemplate jdbcTemplate=new JdbcTemplate();
-        try{
-            BasicDataSource dataSource = new BasicDataSource();
-            dataSource.setDriverClassName(env.getProperty("spring.datasource.driver-class-name"));
-            dataSource.setUrl(env.getProperty("spring.datasource.url"));
-            dataSource.setUsername(env.getProperty("spring.datasource.username"));
-            dataSource.setPassword(env.getProperty("spring.datasource.password"));
-            dataSource.setMinIdle(10);
-            dataSource.setMaxIdle(100);
-            dataSource.setInitialSize(10);
-            dataSource.setMaxActive(100);
-            jdbcTemplate.setDataSource(dataSource);
-            log.info("init jdbcTemplate");
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        return jdbcTemplate;
-    }
+    @Autowired
+    JdbcTemplate jdbcTemplate;
 
 
     @Bean(name = "ossClient")
@@ -80,7 +61,6 @@ public class RootConfig {
 
     @Bean(name = "myConfig")
     public MyConfig getMyConfig(){
-        JdbcTemplate jdbcTemplate=getJdbcTemplate();
         MyConfig myConfig=new MyConfig(jdbcTemplate);
         log.info("init myConfig");
         return myConfig;

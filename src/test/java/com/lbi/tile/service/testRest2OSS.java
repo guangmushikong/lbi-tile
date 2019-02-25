@@ -37,6 +37,14 @@ public class testRest2OSS {
         saveFile(result,filePath);
     }
     @Test
+    public void 计算瓦片坐标(){
+        double x = 104.8249;
+        double y = 26.2310;
+        int zoom=10;
+        Tile tile= TileSystem.LatLongToTile(new Coordinate(x,y),zoom);
+        System.out.println(tile.toString());
+    }
+    @Test
     public void multiThreading(){
         ExecutorService pool = Executors.newFixedThreadPool(32);
 

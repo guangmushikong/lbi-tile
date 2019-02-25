@@ -40,6 +40,15 @@ public class XYZController {
             if(layerName.equalsIgnoreCase("china_city_polygon")){
                 JSONArray body=xyzService.getCityRegionByTile(tile);
                 if(body!=null)return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(body);
+            }else if(layerName.equalsIgnoreCase("liupanshui_extent_line")) {
+                JSONArray body=xyzService.getLPSByTile("liupanshui_extent_line",tile);
+                if(body!=null)return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(body);
+            }else if(layerName.equalsIgnoreCase("liupanshui_track_line")) {
+                JSONArray body=xyzService.getLPSByTile("liupanshui_track_line",tile);
+                if(body!=null)return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(body);
+            }else if(layerName.equalsIgnoreCase("liupanshui_point")) {
+                JSONArray body=xyzService.getLPSByTile("liupanshui_point",tile);
+                if(body!=null)return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(body);
             }else{
                 String body=xyzService.getCacheJsonTile(version,args[0],args[1],args[2],tile);
                 if(body!=null)return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(body);
@@ -76,6 +85,12 @@ public class XYZController {
                 body=xyzService.getGujiaoContour200ByTile(tile);
             }else if(layerName.equalsIgnoreCase("city")){
                 body=xyzService.getCityRegionByTile(tile);
+            }else if(layerName.equalsIgnoreCase("liupanshui_extent_line")){
+                body=xyzService.getLPSByTile("liupanshui_extent_line",tile);
+            }else if(layerName.equalsIgnoreCase("liupanshui_point")){
+                body=xyzService.getLPSByTile("liupanshui_point",tile);
+            }else if(layerName.equalsIgnoreCase("liupanshui_track_line")){
+                body=xyzService.getLPSByTile("liupanshui_track_line",tile);
             }
             if(body!=null)return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(body);
         }else if(extension.equalsIgnoreCase("png")){

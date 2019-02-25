@@ -19,6 +19,7 @@
         <java.version>1.8</java.version>
         <springboot.version>2.0.3.RELEASE</springboot.version>
         <geotools.version>19.0</geotools.version>
+        <spring.cloud.version>Finchley.RELEASE</spring.cloud.version>
     </properties>
 
 
@@ -28,6 +29,27 @@
             <artifactId>lbi-util</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
+        <!-- SpringCloud start -->
+        <!-- 注册中心依赖 -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+        </dependency>
+        <!-- 配置中心依赖 -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-config</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-zuul</artifactId>
+        </dependency>
+        <!-- SpringCloud end -->
+
         <!-- SpringBoot start -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -63,12 +85,7 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>42.2.2</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-dbcp</groupId>
-            <artifactId>commons-dbcp</artifactId>
-            <version>1.4</version>
+            <scope>runtime</scope>
         </dependency>
 
         <dependency>
@@ -100,7 +117,7 @@
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
-                <version>Finchley.RELEASE</version>
+                <version>${spring.cloud.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>

@@ -2,10 +2,10 @@ package com.lbi.tile.config;
 
 import com.lbi.tile.model.TileMap;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.annotation.Order;
+
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.stereotype.Component;
+
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -13,12 +13,12 @@ import java.sql.Types;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-@Order(3)
-@Component
+
 @Slf4j
 public class MyConfig {
     Map<String, TileMap> tileMaps = new HashMap<>();
     Map<String, TileMap> xyzMaps = new HashMap<>();
+
     JdbcTemplate jdbcTemplate;
 
     public MyConfig(JdbcTemplate jdbcTemplate){

@@ -1,16 +1,16 @@
 package com.lbi.tile.dao;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-import javax.annotation.Resource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 
 public class CommonDao {
-    @Resource(name="jdbcTemplate")
-    public JdbcTemplate jdbcTemplate;
+    @Autowired
+    JdbcTemplate jdbcTemplate;
 
     /**
      * 获取表记录总数

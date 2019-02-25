@@ -61,14 +61,42 @@ public class TileDao extends CommonDao{
             Envelope enve= TileSystem.TileXYToBounds(tile);
             Geometry grid= GEO_FACTORY.toGeometry(enve);
             StringBuilder sb=new StringBuilder();
-            System.out.println(grid.toText());
+            //System.out.println(grid.toText());
 
             sb.append("select json_build_object('type','Feature','id',id,'geometry',ST_AsGeoJSON(ST_Transform(geom,4326))::json");
             sb.append(",'properties',json_build_object('contour',contour))");
             sb.append(" as geojson from "+tableName);
             sb.append(" where st_intersects(st_geomfromtext('"+grid.toText()+"',4326),ST_Transform(geom,4326))");
 
-            System.out.println(sb.toString());
+            //System.out.println(sb.toString());
+
+            list=jdbcTemplate.query(
+                    sb.toString(),
+                    new RowMapper<JSONObject>() {
+                        public JSONObject mapRow(ResultSet rs, int i) throws SQLException {
+                            String geojson=rs.getString("geojson");
+                            return JSONObject.parseObject(geojson);
+                        }
+                    });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    public List<JSONObject> getLPSListByTile(String tableName, Tile tile){
+        List<JSONObject> list=null;
+        try{
+            Envelope enve= TileSystem.TileXYToBounds(tile);
+            Geometry grid= GEO_FACTORY.toGeometry(enve);
+            StringBuilder sb=new StringBuilder();
+            //System.out.println(grid.toText());
+
+            sb.append("select json_build_object('type','Feature','id',id,'geometry',ST_AsGeoJSON(ST_Transform(geom,4326))::json,'properties',json_build_object('name','liupanshui')) as geojson");
+            sb.append(" from "+tableName);
+            sb.append(" where st_intersects(st_geomfromtext('"+grid.toText()+"',4326),ST_Transform(geom,4326))");
+
+            //System.out.println(sb.toString());
 
             list=jdbcTemplate.query(
                     sb.toString(),

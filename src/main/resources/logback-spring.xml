@@ -4,7 +4,7 @@
     <!-- 应用名称 -->
     <springProperty scope="context" name="app_name" source="spring.application.name"/>
     <!-- 日志文件保存路径 -->
-    <springProperty scope="context" name="log_home" source="log.home"/>
+    <property name="log_home" value="logs" />
 
     <!-- 日志输出格式 -->
     <property name="ENCODER_PATTERN" value="%d{yyyy-MM-dd  HH:mm:ss.SSS} - %msg%n" />

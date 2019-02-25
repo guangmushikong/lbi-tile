@@ -7,7 +7,6 @@ import com.lbi.model.Tile;
 import com.lbi.util.TileSystem;
 import com.vividsolutions.jts.geom.*;
 import com.vividsolutions.jts.io.WKTReader;
-import org.apache.commons.dbcp.BasicDataSource;
 import org.geotools.geojson.geom.GeometryJSON;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,7 +29,7 @@ public class testDao {
     final GeometryFactory GEO_FACTORY=new GeometryFactory(new PrecisionModel(PrecisionModel.FLOATING),4326);
     @Before
     public void init(){
-        try {
+        /*try {
             BasicDataSource dataSource = new BasicDataSource();
             dataSource.setDriverClassName("org.postgresql.Driver");
             dataSource.setUrl("jdbc:postgresql://localhost:5433/postgres");
@@ -44,7 +43,7 @@ public class testDao {
             jdbcTemplate.setDataSource(dataSource);
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
     }
     @Test
     public void getTotal(){
