@@ -61,6 +61,7 @@ public class TMSService {
         sb.append("/"+tile.getZ());
         sb.append("/"+tile.getX());
         sb.append("/"+tile.getY()+"."+tileMap.getExtension());
+        System.out.println("【path】"+sb.toString());
         return ossDao.request(sb.toString());
     }
 
@@ -73,6 +74,7 @@ public class TMSService {
             sb.append(File.separator).append(tile.getX());
             sb.append(File.separator).append(tile.getY());
             sb.append(".").append(tileMap.getFileExtension());
+            System.out.println("【path】"+sb.toString());
             File file=new File(sb.toString());
             if(file.exists()){
                 if(tileMap.getExtension().equalsIgnoreCase("tif")){
@@ -109,6 +111,7 @@ public class TMSService {
             sb.append(File.separator).append(tile.getX());
             sb.append(File.separator).append(tile.getY());
             sb.append(".").append(tileMap.getFileExtension());
+            System.out.println("【path】"+sb.toString());
             File file=new File(sb.toString());
             if(file.exists()){
                 if(tileMap.getExtension().equalsIgnoreCase("tif")){

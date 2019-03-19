@@ -13,8 +13,8 @@ import java.io.IOException;
 import java.util.Enumeration;
 
 import static org.apache.commons.lang3.StringUtils.isNoneEmpty;
-@Order(2)
-@WebFilter(filterName = "sessionFilter")
+//@Order(2)
+@WebFilter
 @Slf4j
 public class SessionFilter implements Filter {
     @Resource(name="logDao")

@@ -58,4 +58,14 @@ public class DemController {
             return new ResultBody<>(-1,e.getMessage());
         }
     }
+
+    @RequestMapping(value="/contour/jingzhuang")
+    List<ContourPoint> getHeight_jingzhuang(@RequestBody List<ContourPoint> list)throws Exception{
+        return demService.getHeight_jingzhuang(list);
+    }
+
+    @RequestMapping(value="/contour/gujiao")
+    List<ContourPoint> getHeight_gujiao(@RequestBody List<ContourPoint> list)throws Exception{
+        return demService.getHeight_gujiao(list);
+    }
 }

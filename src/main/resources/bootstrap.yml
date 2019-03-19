@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: lbi-tile
+  cloud:
+    config:
+      name: lbi-tile,database-config
+      profile: dev
+      discovery:
+        enabled: true
+        service-id: config-server
+  security:
+    user:
+      name: AKIAPYRXF3VSENILA42Q
+      password: e3iNcgZ+nuVjnfzHQq2HHxoZd3VySliXyG6vFruP
+eureka:
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.cloud.client.ip-address}:${server.port}
+  client:
+    serviceUrl:
+      defaultZone: http://${spring.security.user.name}:${spring.security.user.password}@192.168.15.43:11111/eureka/

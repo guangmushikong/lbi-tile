@@ -1,15 +1,7 @@
 server:
-  port: 8080
-spring:
-  application:
-    name: lbi-tile
-  profiles:
-    active: dev
-eureka:
-  instance:
-    prefer-ip-address: true
-    instance-id: ${spring.cloud.client.ip-address}:${server.port}
-    status-page-url-path: http://111.202.109.210:8888/
-  client:
-    serviceUrl:
-      defaultZone: http://172.28.14.23:11111/eureka/
+  port: 9999
+################### 应用配置
+info:
+  version: 0.0.1
+  name: ${spring.application.name}
+  comment: "数据引擎"
